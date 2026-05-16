@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0d0d0f;
+      --surface:     #141418;
+      --surface2:    #1a1a20;
+      --border:      #26262e;
+      --border2:     #32323c;
+      --text:        #e8e8ee;
+      --muted:       #6a6a7a;
+      --accent:      #3b8aff;
+      --accent-dim:  #1a5fc4;
+      --accent-glow: #3b8aff22;
+      --green:       #22c55e;
+      --amber:       #f59e0b;
+      --red:         #ef4444;
+      --gold:        #f5c518;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ════════════════════════════════
+       TOP NAV
+    ════════════════════════════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,15,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 58px;
+    }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+    }
+
+    .nav-logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      flex-shrink: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .nav-link {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: .35rem .7rem;
+      border-radius: 6px;
+      transition: color .15s, background .15s;
+      cursor: pointer;
+    }
+
+    .nav-link:hover { color: var(--text); background: var(--surface2); }
+
+    .avatar-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      border: none;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .avatar-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      width: 200px;
+      overflow: hidden;
+      display: none;
+      z-index: 200;
+      animation: dropIn .15s ease;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .avatar-dropdown.open { display: block; }
+
+    .dropdown-user {
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dropdown-user-name {
+      font-weight: 600;
+      font-size: .95rem;
+    }
+
+    .dropdown-user-elo {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .65rem 1rem;
+      font-size: .88rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .dropdown-item:hover { background: var(--surface); }
+
+    .dropdown-item.danger { color: var(--red); }
+
+    /* ════════════════════════════════
+       HERO STRIP
+    ════════════════════════════════ */
+    .hero {
+      padding: 3rem 2rem 0;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: .6rem;
+    }
+
+    .hero-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    .hero-heading span {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: .75rem;
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+    }
+
+    /* ════════════════════════════════
+       STAT BAR
+    ════════════════════════════════ */
+    .stat-bar {
+      max-width: 1160px;
+      margin: 2rem auto 0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: .4rem;
+    }
+
+    .stat-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: .78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 600;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      align-self: center;
+    }
+
+    /* ════════════════════════════════
+       MAIN CONTENT
+    ════════════════════════════════ */
+    .main {
+      max-width: 1160px;
+      margin: 2.5rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .main { grid-template-columns: 1fr; }
+    }
+
+    /* ════════════════════════════════
+       SECTION HEADERS
+    ════════════════════════════════ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-action {
+      font-size: .82rem;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .section-action:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════
+       GAME CARDS
+    ════════════════════════════════ */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .game-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .2s, transform .2s;
+      position: relative;
+    }
+
+    .game-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .game-card.coming-soon {
+      opacity: .55;
+      cursor: default;
+    }
+
+    .game-card.coming-soon:hover {
+      border-color: var(--border);
+      transform: none;
+    }
+
+    .game-thumb {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-thumb-chess   { background: #0f1923; }
+    .game-thumb-soon    { background: #111118; }
+
+    /* chess board mini */
+    .chess-mini-board {
+      display: grid;
+      grid-template-columns: repeat(8,1fr);
+      width: 96px; height: 96px;
+      border: 1px solid #2a3a4a;
+    }
+
+    .chess-mini-board div {
+      width: 100%; height: 100%;
+    }
+
+    .chess-mini-board div.light { background: #b8cdd8; }
+    .chess-mini-board div.dark  { background: #3d6f8a; }
+
+    .game-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .2rem .5rem;
+      border-radius: 4px;
+    }
+
+    .badge-live     { background: #22c55e22; color: var(--green); border: 1px solid #22c55e44; }
+    .badge-soon     { background: #6a6a7a22; color: var(--muted); border: 1px solid #6a6a7a44; }
+
+    .game-info {
+      padding: .9rem 1rem;
+    }
+
+    .game-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .game-desc {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .game-meta {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: .6rem;
+    }
+
+    .game-players {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .3; }
+    }
+
+    /* ════════════════════════════════
+       QUICK PLAY  (chess modes)
+    ════════════════════════════════ */
+    .mode-list {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      margin-bottom: 2rem;
+    }
+
+    .mode-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .7rem 1rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+
+    .mode-row:hover {
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+
+    .mode-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .mode-icon-cpu    { background: #1a3a5e; }
+    .mode-icon-local  { background: #1a3a2a; }
+    .mode-icon-online { background: #3a1a1a; }
+
+    .mode-text { flex: 1; min-width: 0; }
+
+    .mode-name {
+      font-weight: 600;
+      font-size: .9rem;
+      color: var(--text);
+    }
+
+    .mode-desc {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .mode-arrow {
+      color: var(--muted);
+      font-size: 1rem;
+      transition: transform .15s, color .15s;
+    }
+
+    .mode-row:hover .mode-arrow {
+      transform: translateX(3px);
+      color: var(--text);
+    }
+
+    /* ════════════════════════════════
+       RIGHT COLUMN
+    ════════════════════════════════ */
+
+    /* Player card */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .player-top {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      margin-bottom: 1rem;
+    }
+
+    .player-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .player-name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .player-since {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: .5rem;
+    }
+
+    .stat-box {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: .6rem .5rem;
+      text-align: center;
+    }
+
+    .stat-box-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-box-label {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-top: .1rem;
+    }
+
+    .elo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .85rem;
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: .65rem .85rem;
+    }
+
+    .elo-label {
+      font-size: .78rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .elo-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    /* Leaderboard mini */
+    .lb-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .lb-header {
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lb-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    .lb-row:last-child { border-bottom: none; }
+    .lb-row:hover { background: var(--surface2); }
+
+    .lb-rank {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--muted);
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .lb-rank.top { color: var(--gold); }
+
+    .lb-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .lb-name { flex: 1; font-size: .88rem; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .lb-elo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* Recent activity */
+    .activity-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .activity-header {
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .65rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .activity-row:last-child { border-bottom: none; }
+
+    .result-badge {
+      font-size: .68rem;
+      font-weight: 700;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: .08em;
+      padding: .2rem .45rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .result-w { background: #22c55e18; color: var(--green); }
+    .result-l { background: #ef444418; color: var(--red);   }
+    .result-d { background: #f59e0b18; color: var(--amber); }
+
+    .activity-text { flex: 1; font-size: .82rem; color: var(--muted); min-width: 0; }
+    .activity-text b { color: var(--text); font-weight: 600; }
+
+    .activity-elo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .elo-up   { color: var(--green); }
+    .elo-down { color: var(--red);   }
+
+    /* ════════════════════════════════
+       BUTTONS
+    ════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: .55rem 1.1rem;
+      border-radius: 8px;
+      font-family: 'Barlow', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s, transform .1s;
+    }
+
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { opacity: .88; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover { background: var(--surface2); }
+
+    /* auth-gate overlay */
+    .auth-gate {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeIn .2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .auth-gate-card {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      animation: rise .25s cubic-bezier(.16,1,.3,1);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px) scale(.97); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .auth-gate-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .auth-gate-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; margin-bottom: .5rem; }
+    .auth-gate-sub   { font-size: .9rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .auth-gate-btns  { display: flex; gap: .75rem; justify-content: center; }
+
+    /* ════════════════════════════════
+       MODE MODAL
+    ════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeIn .2s ease;
+    }
+
+    .modal {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 1.8rem;
+      max-width: 420px;
+      width: 100%;
+      animation: rise .25s cubic-bezier(.16,1,.3,1);
+    }
+
+    .modal-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: 1.2rem;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+    }
+
+    .modal-opt {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+
+    .modal-opt:hover { border-color: var(--accent); background: #1a2535; }
+
+    .modal-opt-icon { font-size: 1.4rem; margin-bottom: .4rem; }
+    .modal-opt-name { font-weight: 600; font-size: .9rem; color: var(--text); }
+    .modal-opt-desc { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+
+    .modal-close {
+      margin-top: 1rem;
+      width: 100%;
+      padding: .55rem;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: 'Barlow', sans-serif;
+      font-size: .85rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover { background: var(--surface); color: var(--text); }
+
+    /* difficulty sub-modal */
+    .diff-list { display: flex; flex-direction: column; gap: .5rem; }
+    .diff-row {
+      display: flex; align-items: center; gap: .75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: .65rem .9rem; cursor: pointer;
+      transition: border-color .15s;
+    }
+    .diff-row:hover { border-color: var(--accent); }
+    .diff-pip {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .diff-name { font-weight: 600; font-size: .9rem; }
+    .diff-desc { font-size: .75rem; color: var(--muted); flex: 1; text-align: right; }
+
+    /* hidden utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════ -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    Game Arena
+  </a>
+
+  <div class="nav-right">
+    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+
+    <!-- Logged-in state -->
+    <div id="navAuth" style="position:relative; display:none;">
+      <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
+        <span id="avatarInitials">?</span>
+      </button>
+      <div class="avatar-dropdown" id="avatarDropdown">
+        <div class="dropdown-user">
+          <div class="dropdown-user-name" id="dropdownName">—</div>
+          <div class="dropdown-user-elo" id="dropdownElo">Elo 1200</div>
+        </div>
+        <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+        <a href="leaderboard.html" class="dropdown-item">🏆 Leaderboard</a>
+        <div class="dropdown-item danger" id="logoutBtn">🚪 Sign Out</div>
+      </div>
+    </div>
+
+    <!-- Guest state -->
+    <div id="navGuest">
+      <a href="login.html" class="nav-link">Sign In</a>
+      <a href="signup.html"><button class="btn btn-primary" style="padding:.4rem .9rem;font-size:.82rem;">Join Free</button></a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-eyebrow">Welcome to</div>
+  <h1 class="hero-heading">Game <span>Arena</span></h1>
+  <p class="hero-sub">Compete, rank up, and dominate. Pick a game and start your climb.</p>
+</div>
+
+<!-- ══ STAT BAR ══════════════════════════════════ -->
+<div class="stat-bar" id="statBar">
+  <div class="stat-item">
+    <span class="stat-val" id="statGames">—</span>
+    <span class="stat-label">games played</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-val" id="statWins">—</span>
+    <span class="stat-label">wins</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-val" id="statElo">1200</span>
+    <span class="stat-label">elo rating</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-val" id="statWinRate">—%</span>
+    <span class="stat-label">win rate</span>
+  </div>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════ -->
+<div class="main">
+
+  <!-- LEFT COL -->
+  <div class="left-col">
+
+    <!-- Games -->
+    <div class="section-header">
+      <span class="section-title">Games</span>
+    </div>
+
+    <div class="games-grid">
+      <!-- Chess -->
+      <div class="game-card" id="chessCard">
+        <div class="game-thumb game-thumb-chess">
+          <div class="chess-mini-board" id="miniBoard"></div>
+          <span class="game-badge badge-live">Live</span>
+        </div>
+        <div class="game-info">
+          <div class="game-name">Chess</div>
+          <div class="game-desc">Play vs AI or challenge friends. Ranked & unranked.</div>
+          <div class="game-meta">
+            <span class="live-dot"></span>
+            <span class="game-players" id="chessPlayerCount">— online</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder: more games -->
+      <div class="game-card coming-soon">
+        <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🃏</div>
+        <div class="game-info">
+          <div class="game-name" style="color:var(--muted);">Card Game</div>
+          <div class="game-desc">Coming soon to Game Arena.</div>
+          <div class="game-meta">
+            <span class="game-badge badge-soon" style="position:static;">Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-card coming-soon">
+        <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🎲</div>
+        <div class="game-info">
+          <div class="game-name" style="color:var(--muted);">Board Game</div>
+          <div class="game-desc">Coming soon to Game Arena.</div>
+          <div class="game-meta">
+            <span class="game-badge badge-soon" style="position:static;">Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Play: Chess -->
+    <div class="section-header">
+      <span class="section-title">Quick Play — Chess</span>
+    </div>
+
+    <div class="mode-list">
+      <div class="mode-row" id="modeVsCPU">
+        <div class="mode-icon mode-icon-cpu">🤖</div>
+        <div class="mode-text">
+          <div class="mode-name">vs Computer</div>
+          <div class="mode-desc">Rookie to Grandmaster difficulty</div>
+        </div>
+        <span class="mode-arrow">→</span>
+      </div>
+
+      <div class="mode-row" id="modeLocal">
+        <div class="mode-icon mode-icon-local">👥</div>
+        <div class="mode-text">
+          <div class="mode-name">Local Multiplayer</div>
+          <div class="mode-desc">Pass & play on the same device</div>
+        </div>
+        <span class="mode-arrow">→</span>
+      </div>
+
+      <div class="mode-row" id="modeOnline">
+        <div class="mode-icon mode-icon-online">🌐</div>
+        <div class="mode-text">
+          <div class="mode-name">Play Online</div>
+          <div class="mode-desc">Ranked — requires account</div>
+        </div>
+        <span class="mode-arrow">→</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT COL -->
+  <div class="right-col">
+
+    <!-- Player card (logged in) -->
+    <div class="player-card" id="playerCard" style="display:none;">
+      <div class="player-top">
+        <div class="player-avatar" id="playerAvatar">?</div>
+        <div>
+          <div class="player-name" id="playerName">—</div>
+          <div class="player-since" id="playerSince">Member</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-box-val" id="pWins">0</div>
+          <div class="stat-box-label">Wins</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-val" id="pLosses">0</div>
+          <div class="stat-box-label">Losses</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-val" id="pDraws">0</div>
+          <div class="stat-box-label">Draws</div>
+        </div>
+      </div>
+      <div class="elo-row">
+        <span class="elo-label">♟ Chess Elo</span>
+        <span class="elo-val" id="pElo">1200</span>
+      </div>
+    </div>
+
+    <!-- Join CTA (guest) -->
+    <div class="player-card" id="guestCard">
+      <div style="text-align:center; padding:.5rem 0;">
+        <div style="font-size:2rem; margin-bottom:.6rem;">♛</div>
+        <div style="font-weight:700; font-size:1rem; margin-bottom:.35rem;">Track your progress</div>
+        <div style="font-size:.82rem; color:var(--muted); margin-bottom:1.1rem;">Sign up to earn Elo, climb the leaderboard and save your games.</div>
+        <div style="display:flex; gap:.6rem; justify-content:center;">
+          <a href="signup.html"><button class="btn btn-primary">Create Account</button></a>
+          <a href="login.html"><button class="btn btn-ghost">Sign In</button></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini leaderboard -->
+    <div class="lb-card">
+      <div class="lb-header">
+        <span class="lb-title">Top Players</span>
+        <a href="leaderboard.html" class="section-action" style="font-size:.78rem;">View all →</a>
+      </div>
+      <div id="lbList">
+        <!-- populated by JS -->
+        <div style="padding:1.5rem; text-align:center; color:var(--muted); font-size:.85rem;">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Recent games (logged in) -->
+    <div class="activity-card" id="recentCard" style="display:none;">
+      <div class="activity-header">
+        <span class="section-title">Recent Games</span>
+      </div>
+      <div id="recentList">
+        <div style="padding:1.2rem; text-align:center; color:var(--muted); font-size:.85rem;">No games yet.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ══ DIFFICULTY MODAL ══════════════════════════ -->
+<div class="modal-overlay hidden" id="diffModal">
+  <div class="modal">
+    <div class="modal-title">Choose Difficulty</div>
+    <div class="diff-list">
+      <div class="diff-row" onclick="startChess('cpu','rookie')">
+        <span class="diff-pip" style="background:#6a6a7a;"></span>
+        <span class="diff-name">Rookie</span>
+        <span class="diff-desc">Random moves, very easy</span>
+      </div>
+      <div class="diff-row" onclick="startChess('cpu','beginner')">
+        <span class="diff-pip" style="background:#22c55e;"></span>
+        <span class="diff-name">Beginner</span>
+        <span class="diff-desc">Takes free pieces</span>
+      </div>
+      <div class="diff-row" onclick="startChess('cpu','amateur')">
+        <span class="diff-pip" style="background:#3b8aff;"></span>
+        <span class="diff-name">Amateur</span>
+        <span class="diff-desc">Depth-2 minimax</span>
+      </div>
+      <div class="diff-row" onclick="startChess('cpu','pro')">
+        <span class="diff-pip" style="background:#f59e0b;"></span>
+        <span class="diff-name">Pro</span>
+        <span class="diff-desc">Depth-3 + quiescence</span>
+      </div>
+      <div class="diff-row" onclick="startChess('cpu','grandmaster')">
+        <span class="diff-pip" style="background:#ef4444;"></span>
+        <span class="diff-name">Grandmaster</span>
+        <span class="diff-desc">Iterative deepening, brutal</span>
+      </div>
+    </div>
+    <button class="modal-close" onclick="closeModal('diffModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- ══ AUTH GATE ══════════════════════════════════ -->
+<div class="auth-gate hidden" id="authGate">
+  <div class="auth-gate-card">
+    <div class="auth-gate-icon">🔒</div>
+    <div class="auth-gate-title">Sign in to play online</div>
+    <div class="auth-gate-sub">Ranked online play requires an account so your Elo is tracked.</div>
+    <div class="auth-gate-btns">
+      <a href="login.html"><button class="btn btn-primary">Sign In</button></a>
+      <a href="signup.html"><button class="btn btn-ghost">Sign Up</button></a>
+    </div>
+    <div style="margin-top:.85rem; text-align:center;">
+      <button onclick="closeModal('authGate')" style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp }         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth,
+           onAuthStateChanged,
+           signOut }               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore,
+           doc, getDoc,
+           collection, query,
+           where, orderBy,
+           limit, getDocs }        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getDatabase,
+           ref, get }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyD37HMOW2F3bNIlN8A2uZKz3Jha6PTpdRM",
+    authDomain:        "game-arena-30870.firebaseapp.com",
+    databaseURL:       "https://game-arena-30870-default-rtdb.firebaseio.com",
+    projectId:         "game-arena-30870",
+    storageBucket:     "game-arena-30870.firebasestorage.app",
+    messagingSenderId: "229549562058",
+    appId:             "1:229549562058:web:a1c6106644379c2d2187c33",
+    measurementId:     "G-LC5EJVLTLQ",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+  const rtdb = getDatabase(app);
+
+  // ── Auth state ──
+  let currentUser = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+
+    if (user) {
+      showLoggedIn(user);
+      await loadProfile(user.uid);
+      await loadRecentGames(user.uid);
+    } else {
+      showGuest();
+    }
+
+    await loadLeaderboard();
+    await loadOnlineCount();
+  });
+
+  // ── UI: logged-in ──
+  function showLoggedIn(user) {
+    const initials = (user.displayName || user.email || "?")
+      .split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+
+    document.getElementById("navAuth").style.display    = "flex";
+    document.getElementById("navGuest").style.display   = "none";
+    document.getElementById("avatarInitials").textContent = initials;
+    document.getElementById("dropdownName").textContent  = user.displayName || "Player";
+    document.getElementById("playerCard").style.display  = "block";
+    document.getElementById("guestCard").style.display   = "none";
+    document.getElementById("recentCard").style.display  = "block";
+    document.getElementById("playerAvatar").textContent  = initials;
+  }
+
+  // ── UI: guest ──
+  function showGuest() {
+    document.getElementById("navAuth").style.display   = "none";
+    document.getElementById("navGuest").style.display  = "flex";
+    document.getElementById("playerCard").style.display = "none";
+    document.getElementById("guestCard").style.display  = "block";
+    document.getElementById("recentCard").style.display = "none";
+    document.getElementById("statBar").style.display    = "none";
+  }
+
+  // ── Load profile ──
+  async function loadProfile(uid) {
+    try {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (!snap.exists()) return;
+      const data  = snap.data();
+      const stats = data.stats || {};
+
+      const name = data.username || currentUser.displayName || "Player";
+      document.getElementById("playerName").textContent  = name;
+      document.getElementById("dropdownName").textContent = name;
+
+      const joined = data.createdAt?.toDate?.();
+      if (joined) {
+        document.getElementById("playerSince").textContent =
+          "Member since " + joined.toLocaleDateString("en-MY", { month: "short", year: "numeric" });
+      }
+
+      document.getElementById("pWins").textContent   = stats.wins   || 0;
+      document.getElementById("pLosses").textContent = stats.losses || 0;
+      document.getElementById("pDraws").textContent  = stats.draws  || 0;
+      document.getElementById("pElo").textContent    = stats.elo    || 1200;
+
+      // stat bar
+      document.getElementById("statGames").textContent  = stats.gamesPlayed || 0;
+      document.getElementById("statWins").textContent   = stats.wins        || 0;
+      document.getElementById("statElo").textContent    = stats.elo         || 1200;
+      document.getElementById("statWinRate").textContent = ((stats.winRate || 0) * 100).toFixed(0) + "%";
+      document.getElementById("dropdownElo").textContent = "Elo " + (stats.elo || 1200);
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Load leaderboard (top 5) ──
+  async function loadLeaderboard() {
+    try {
+      const q = query(
+        collection(db, "leaderboard"),
+        where("isPublic", "==", true),
+        where("gamesPlayed", ">=", 1),
+        orderBy("gamesPlayed"),
+        orderBy("elo", "desc"),
+        limit(5)
+      );
+      const snap = await getDocs(q);
+
+      const colors = ["#3b8aff","#22c55e","#f59e0b","#ef4444","#a78bfa"];
+      const lbList = document.getElementById("lbList");
+
+      if (snap.empty) {
+        lbList.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No ranked players yet.</div>`;
+        return;
+      }
+
+      lbList.innerHTML = snap.docs.map((d, i) => {
+        const p = d.data();
+        const initials = (p.username || "?").slice(0,2).toUpperCase();
+        const isTop = i < 3;
+        return `
+          <div class="lb-row">
+            <span class="lb-rank ${isTop ? "top" : ""}">${i + 1}</span>
+            <div class="lb-avatar" style="background:${colors[i] || "#6a6a7a"}">${initials}</div>
+            <span class="lb-name">${p.username || "Player"}</span>
+            <span class="lb-elo">${p.elo || 1200}</span>
+          </div>`;
+      }).join("");
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Load recent games ──
+  async function loadRecentGames(uid) {
+    try {
+      const [wSnap, bSnap] = await Promise.all([
+        getDocs(query(collection(db,"games"), where("white.uid","==",uid), orderBy("playedAt","desc"), limit(5))),
+        getDocs(query(collection(db,"games"), where("black.uid","==",uid), orderBy("playedAt","desc"), limit(5))),
+      ]);
+
+      const all = [
+        ...wSnap.docs.map(d=>({...d.data(), playerColor:"white"})),
+        ...bSnap.docs.map(d=>({...d.data(), playerColor:"black"})),
+      ].sort((a,b)=>(b.playedAt?.seconds||0)-(a.playedAt?.seconds||0)).slice(0,5);
+
+      const list = document.getElementById("recentList");
+
+      if (!all.length) {
+        list.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No games yet. Play your first game!</div>`;
+        return;
+      }
+
+      list.innerHTML = all.map(g => {
+        const isWhite   = g.playerColor === "white";
+        const opponent  = isWhite ? g.black?.username : g.white?.username;
+        const myNewElo  = isWhite ? g.white?.newElo : g.black?.newElo;
+        const myOldElo  = isWhite ? g.white?.elo    : g.black?.elo;
+        const eloChange = myNewElo && myOldElo ? myNewElo - myOldElo : null;
+
+        let res, cls;
+        if (g.result === g.playerColor)       { res = "W"; cls = "result-w"; }
+        else if (g.result === "draw")          { res = "D"; cls = "result-d"; }
+        else                                   { res = "L"; cls = "result-l"; }
+
+        const eloHtml = eloChange !== null
+          ? `<span class="activity-elo ${eloChange >= 0 ? "elo-up" : "elo-down"}">${eloChange >= 0 ? "+" : ""}${eloChange}</span>`
+          : "";
+
+        return `
+          <div class="activity-row">
+            <span class="result-badge ${cls}">${res}</span>
+            <span class="activity-text">vs <b>${opponent || "Unknown"}</b> · ${g.reason || ""}</span>
+            ${eloHtml}
+          </div>`;
+      }).join("");
+    } catch (e) { console.error(e); }
+  }
+
+  // ── Online player count (rooms in rtdb) ──
+  async function loadOnlineCount() {
+    try {
+      const snap = await get(ref(rtdb, "rooms"));
+      const rooms = snap.val() || {};
+      const active = Object.values(rooms).filter(r => r.status === "active").length;
+      const count  = active * 2;
+      document.getElementById("chessPlayerCount").textContent = count + " online";
+    } catch { }
+  }
+
+  // ── Dropdown toggle ──
+  const avatarBtn      = document.getElementById("avatarBtn");
+  const avatarDropdown = document.getElementById("avatarDropdown");
+
+  avatarBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    avatarDropdown.classList.toggle("open");
+  });
+
+  document.addEventListener("click", () => avatarDropdown.classList.remove("open"));
+
+  // ── Logout ──
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.reload();
+  });
+
+  // ── Expose for inline handlers ──
+  window._currentUser = () => currentUser;
+</script>
+
+<!-- Non-module JS for inline handlers -->
+<script>
+  // Build mini chess board
+  const miniBoard = document.getElementById("miniBoard");
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const sq = document.createElement("div");
+      sq.className = (r + c) % 2 === 0 ? "light" : "dark";
+      miniBoard.appendChild(sq);
+    }
+  }
+
+  // Chess card → shows mode picker (no auth needed for CPU/local)
+  document.getElementById("chessCard").addEventListener("click", () => {
+    showDiffModal(); // shortcut: go straight to difficulty
+  });
+
+  document.getElementById("modeVsCPU").addEventListener("click", showDiffModal);
+
+  document.getElementById("modeLocal").addEventListener("click", () => {
+    startChess("local", null);
+  });
+
+  document.getElementById("modeOnline").addEventListener("click", () => {
+    if (!window._currentUser || !window._currentUser()) {
+      document.getElementById("authGate").classList.remove("hidden");
+    } else {
+      startChess("online", null);
+    }
+  });
+
+  function showDiffModal() {
+    document.getElementById("diffModal").classList.remove("hidden");
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.add("hidden");
+  }
+
+  function startChess(mode, difficulty) {
+    let url = "chess.html?mode=" + mode;
+    if (difficulty) url += "&difficulty=" + difficulty;
+    window.location.href = url;
+  }
+
+  // Close modals on overlay click
+  document.getElementById("diffModal").addEventListener("click", function(e) {
+    if (e.target === this) closeModal("diffModal");
+  });
+  document.getElementById("authGate").addEventListener("click", function(e) {
+    if (e.target === this) closeModal("authGate");
+  });
+</script>
+
+</body>
+</html>
