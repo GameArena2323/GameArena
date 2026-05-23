@@ -845,6 +845,28 @@
     .diff-name { font-weight: 600; font-size: .9rem; }
     .diff-desc { font-size: .75rem; color: var(--muted); flex: 1; text-align: right; }
 
+    /* mode option rows (step 1) */
+    .mode-opt-row {
+      display: flex; align-items: center; gap: .75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: .8rem 1rem; cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .mode-opt-row:hover { border-color: var(--accent); background: #1a2535; }
+    .mode-opt-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .mode-opt-text { flex: 1; }
+    .mode-opt-name { font-weight: 600; font-size: .92rem; color: var(--text); }
+    .mode-opt-desc { font-size: .75rem; color: var(--muted); margin-top: .1rem; }
+    .mode-opt-arrow {
+      font-size: 1.3rem; color: var(--muted);
+      transition: transform .15s, color .15s;
+    }
+    .mode-opt-row:hover .mode-opt-arrow { transform: translateX(3px); color: var(--accent); }
+
     /* hidden utility */
     .hidden { display: none !important; }
   </style>
@@ -869,7 +891,7 @@
       <div class="avatar-dropdown" id="avatarDropdown">
         <div class="dropdown-user">
           <div class="dropdown-user-name" id="dropdownName">—</div>
-          <div class="dropdown-user-elo" id="dropdownElo">Elo 1200</div>
+          <div class="dropdown-user-elo" id="dropdownElo">Elo 0</div>
         </div>
         <a href="profile.html" class="dropdown-item">👤 My Profile</a>
         <a href="leaderboard.html" class="dropdown-item">🏆 Leaderboard</a>
@@ -905,7 +927,7 @@
   </div>
   <div class="stat-divider"></div>
   <div class="stat-item">
-    <span class="stat-val" id="statElo">1200</span>
+    <span class="stat-val" id="statElo">0</span>
     <span class="stat-label">elo rating</span>
   </div>
   <div class="stat-divider"></div>
@@ -1031,7 +1053,7 @@
       </div>
       <div class="elo-row">
         <span class="elo-label">♟ Chess Elo</span>
-        <span class="elo-val" id="pElo">1200</span>
+        <span class="elo-val" id="pElo">0</span>
       </div>
     </div>
 
@@ -1074,38 +1096,84 @@
 
 </div>
 
-<!-- ══ DIFFICULTY MODAL ══════════════════════════ -->
-<div class="modal-overlay hidden" id="diffModal">
-  <div class="modal">
-    <div class="modal-title">Choose Difficulty</div>
-    <div class="diff-list">
-      <div class="diff-row" onclick="startChess('cpu','rookie')">
-        <span class="diff-pip" style="background:#6a6a7a;"></span>
-        <span class="diff-name">Rookie</span>
-        <span class="diff-desc">Random moves, very easy</span>
+<!-- ══ GAME MODE MODAL ════════════════════════════ -->
+<div class="modal-overlay hidden" id="gameModeModal">
+  <div class="modal" style="max-width:400px;">
+
+    <!-- Step 1: Pick mode -->
+    <div id="stepMode">
+      <div class="modal-title" style="display:flex;align-items:center;gap:.6rem;">
+        <span>♟</span> Play Chess
       </div>
-      <div class="diff-row" onclick="startChess('cpu','beginner')">
-        <span class="diff-pip" style="background:#22c55e;"></span>
-        <span class="diff-name">Beginner</span>
-        <span class="diff-desc">Takes free pieces</span>
+      <div style="display:flex;flex-direction:column;gap:.5rem;">
+
+        <div class="mode-opt-row" id="optVsCPU">
+          <div class="mode-opt-icon" style="background:#1a3a5e;">🤖</div>
+          <div class="mode-opt-text">
+            <div class="mode-opt-name">vs Computer</div>
+            <div class="mode-opt-desc">Challenge the AI — pick your difficulty</div>
+          </div>
+          <span class="mode-opt-arrow">›</span>
+        </div>
+
+        <div class="mode-opt-row" id="optLocal">
+          <div class="mode-opt-icon" style="background:#1a3a2a;">👥</div>
+          <div class="mode-opt-text">
+            <div class="mode-opt-name">Local Multiplayer</div>
+            <div class="mode-opt-desc">Pass &amp; play on the same device</div>
+          </div>
+          <span class="mode-opt-arrow">›</span>
+        </div>
+
+        <div class="mode-opt-row" id="optOnline">
+          <div class="mode-opt-icon" style="background:#3a1a1a;">🌐</div>
+          <div class="mode-opt-text">
+            <div class="mode-opt-name">Play Online</div>
+            <div class="mode-opt-desc">Ranked — requires account</div>
+          </div>
+          <span class="mode-opt-arrow">›</span>
+        </div>
+
       </div>
-      <div class="diff-row" onclick="startChess('cpu','amateur')">
-        <span class="diff-pip" style="background:#3b8aff;"></span>
-        <span class="diff-name">Amateur</span>
-        <span class="diff-desc">Depth-2 minimax</span>
-      </div>
-      <div class="diff-row" onclick="startChess('cpu','pro')">
-        <span class="diff-pip" style="background:#f59e0b;"></span>
-        <span class="diff-name">Pro</span>
-        <span class="diff-desc">Depth-3 + quiescence</span>
-      </div>
-      <div class="diff-row" onclick="startChess('cpu','grandmaster')">
-        <span class="diff-pip" style="background:#ef4444;"></span>
-        <span class="diff-name">Grandmaster</span>
-        <span class="diff-desc">Iterative deepening, brutal</span>
-      </div>
+      <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
     </div>
-    <button class="modal-close" onclick="closeModal('diffModal')">Cancel</button>
+
+    <!-- Step 2: Pick difficulty (vs CPU only) -->
+    <div id="stepDifficulty" style="display:none;">
+      <div class="modal-title" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;" id="backToMode">
+        <span style="font-size:1rem;color:var(--muted);">‹</span>
+        <span>Choose Difficulty</span>
+      </div>
+      <div class="diff-list">
+        <div class="diff-row" onclick="startChess('cpu','rookie')">
+          <span class="diff-pip" style="background:#6a6a7a;"></span>
+          <span class="diff-name">Rookie</span>
+          <span class="diff-desc">Random moves, very easy</span>
+        </div>
+        <div class="diff-row" onclick="startChess('cpu','beginner')">
+          <span class="diff-pip" style="background:#22c55e;"></span>
+          <span class="diff-name">Beginner</span>
+          <span class="diff-desc">Takes free pieces</span>
+        </div>
+        <div class="diff-row" onclick="startChess('cpu','amateur')">
+          <span class="diff-pip" style="background:#3b8aff;"></span>
+          <span class="diff-name">Amateur</span>
+          <span class="diff-desc">Depth-2 minimax</span>
+        </div>
+        <div class="diff-row" onclick="startChess('cpu','pro')">
+          <span class="diff-pip" style="background:#f59e0b;"></span>
+          <span class="diff-name">Pro</span>
+          <span class="diff-desc">Depth-3 + quiescence</span>
+        </div>
+        <div class="diff-row" onclick="startChess('cpu','grandmaster')">
+          <span class="diff-pip" style="background:#ef4444;"></span>
+          <span class="diff-name">Grandmaster</span>
+          <span class="diff-desc">Iterative deepening, brutal</span>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
+    </div>
+
   </div>
 </div>
 
@@ -1219,14 +1287,14 @@
       document.getElementById("pWins").textContent   = stats.wins   || 0;
       document.getElementById("pLosses").textContent = stats.losses || 0;
       document.getElementById("pDraws").textContent  = stats.draws  || 0;
-      document.getElementById("pElo").textContent    = stats.elo    || 1200;
+      document.getElementById("pElo").textContent    = stats.elo    || 0;
 
       // stat bar
       document.getElementById("statGames").textContent  = stats.gamesPlayed || 0;
       document.getElementById("statWins").textContent   = stats.wins        || 0;
-      document.getElementById("statElo").textContent    = stats.elo         || 1200;
+      document.getElementById("statElo").textContent    = stats.elo         || 0;
       document.getElementById("statWinRate").textContent = ((stats.winRate || 0) * 100).toFixed(0) + "%";
-      document.getElementById("dropdownElo").textContent = "Elo " + (stats.elo || 1200);
+      document.getElementById("dropdownElo").textContent = "Elo " + (stats.elo || 0);
     } catch (e) { console.error(e); }
   }
 
@@ -1260,7 +1328,7 @@
             <span class="lb-rank ${isTop ? "top" : ""}">${i + 1}</span>
             <div class="lb-avatar" style="background:${colors[i] || "#6a6a7a"}">${initials}</div>
             <span class="lb-name">${p.username || "Player"}</span>
-            <span class="lb-elo">${p.elo || 1200}</span>
+            <span class="lb-elo">${p.elo || 0}</span>
           </div>`;
       }).join("");
     } catch (e) { console.error(e); }
@@ -1356,42 +1424,65 @@
     }
   }
 
-  // Chess card → shows mode picker (no auth needed for CPU/local)
-  document.getElementById("chessCard").addEventListener("click", () => {
-    showDiffModal(); // shortcut: go straight to difficulty
+  // ── Modal helpers ──
+  function closeModal(id) {
+    document.getElementById(id).classList.add("hidden");
+    // Reset to step 1 when closing
+    if (id === "gameModeModal") showStep("stepMode");
+  }
+
+  function showStep(stepId) {
+    document.getElementById("stepMode").style.display       = stepId === "stepMode"       ? "" : "none";
+    document.getElementById("stepDifficulty").style.display = stepId === "stepDifficulty" ? "" : "none";
+  }
+
+  // ── Open the game mode modal ──
+  function openGameModal() {
+    showStep("stepMode");
+    document.getElementById("gameModeModal").classList.remove("hidden");
+  }
+
+  // ── Clicking the chess card or Quick Play rows all open the same modal ──
+  document.getElementById("chessCard").addEventListener("click", openGameModal);
+  document.getElementById("modeVsCPU").addEventListener("click", openGameModal);
+  document.getElementById("modeLocal").addEventListener("click", openGameModal);
+  document.getElementById("modeOnline").addEventListener("click", openGameModal);
+
+  // ── Step 1: mode selection ──
+  document.getElementById("optVsCPU").addEventListener("click", () => {
+    showStep("stepDifficulty");
   });
 
-  document.getElementById("modeVsCPU").addEventListener("click", showDiffModal);
-
-  document.getElementById("modeLocal").addEventListener("click", () => {
+  document.getElementById("optLocal").addEventListener("click", () => {
+    closeModal("gameModeModal");
     startChess("local", null);
   });
 
-  document.getElementById("modeOnline").addEventListener("click", () => {
+  document.getElementById("optOnline").addEventListener("click", () => {
     if (!window._currentUser || !window._currentUser()) {
+      closeModal("gameModeModal");
       document.getElementById("authGate").classList.remove("hidden");
     } else {
+      closeModal("gameModeModal");
       startChess("online", null);
     }
   });
 
-  function showDiffModal() {
-    document.getElementById("diffModal").classList.remove("hidden");
-  }
+  // ── Step 2: back button ──
+  document.getElementById("backToMode").addEventListener("click", () => {
+    showStep("stepMode");
+  });
 
-  function closeModal(id) {
-    document.getElementById(id).classList.add("hidden");
-  }
-
+  // ── Navigate ──
   function startChess(mode, difficulty) {
-    let url = "chess.html?mode=" + mode;
+    let url = "../chess/chess.html?mode=" + mode;
     if (difficulty) url += "&difficulty=" + difficulty;
     window.location.href = url;
   }
 
-  // Close modals on overlay click
-  document.getElementById("diffModal").addEventListener("click", function(e) {
-    if (e.target === this) closeModal("diffModal");
+  // ── Close on overlay click ──
+  document.getElementById("gameModeModal").addEventListener("click", function(e) {
+    if (e.target === this) closeModal("gameModeModal");
   });
   document.getElementById("authGate").addEventListener("click", function(e) {
     if (e.target === this) closeModal("authGate");
