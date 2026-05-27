@@ -1,32 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Game Arena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:          #0d0d0f;
-      --surface:     #141418;
-      --surface2:    #1a1a20;
-      --border:      #26262e;
-      --border2:     #32323c;
-      --text:        #e8e8ee;
-      --muted:       #6a6a7a;
-      --accent:      #3b8aff;
-      --accent-dim:  #1a5fc4;
-      --accent-glow: #3b8aff22;
-      --green:       #22c55e;
-      --amber:       #f59e0b;
-      --red:         #ef4444;
-      --gold:        #f5c518;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html { scroll-behavior: smooth; }
+    :root {
+      --bg: #0d0d0f;
+      --surface: #141418;
+      --surface2: #1a1a20;
+      --border: #26262e;
+      --border2: #32323c;
+      --text: #e8e8ee;
+      --muted: #6a6a7a;
+      --accent: #3b8aff;
+      --accent-dim: #1a5fc4;
+      --accent-glow: #3b8aff22;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --gold: #f5c518;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--bg);
@@ -37,7 +48,10 @@
       min-height: 100vh;
     }
 
-    a { text-decoration: none; color: inherit; }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     /* ════════════════════════════════
        TOP NAV
@@ -46,7 +60,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(13,13,15,.92);
+      background: rgba(13, 13, 15, .92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -69,7 +83,8 @@
     }
 
     .nav-logo-dot {
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--accent);
       box-shadow: 0 0 8px var(--accent);
@@ -92,10 +107,14 @@
       cursor: pointer;
     }
 
-    .nav-link:hover { color: var(--text); background: var(--surface2); }
+    .nav-link:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
 
     .avatar-btn {
-      width: 34px; height: 34px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-dim), var(--accent));
       display: flex;
@@ -125,11 +144,20 @@
     }
 
     @keyframes dropIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to   { opacity: 1; transform: none; }
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
 
-    .avatar-dropdown.open { display: block; }
+    .avatar-dropdown.open {
+      display: block;
+    }
 
     .dropdown-user {
       padding: .85rem 1rem;
@@ -157,9 +185,13 @@
       transition: background .15s;
     }
 
-    .dropdown-item:hover { background: var(--surface); }
+    .dropdown-item:hover {
+      background: var(--surface);
+    }
 
-    .dropdown-item.danger { color: var(--red); }
+    .dropdown-item.danger {
+      color: var(--red);
+    }
 
     /* ════════════════════════════════
        HERO STRIP
@@ -255,7 +287,9 @@
     }
 
     @media (max-width: 860px) {
-      .main { grid-template-columns: 1fr; }
+      .main {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ════════════════════════════════
@@ -284,7 +318,9 @@
       font-weight: 500;
     }
 
-    .section-action:hover { text-decoration: underline; }
+    .section-action:hover {
+      text-decoration: underline;
+    }
 
     /* ════════════════════════════════
        GAME CARDS
@@ -331,27 +367,40 @@
       overflow: hidden;
     }
 
-    .game-thumb-chess   { background: #0f1923; }
-    .game-thumb-soon    { background: #111118; }
+    .game-thumb-chess {
+      background: #0f1923;
+    }
+
+    .game-thumb-soon {
+      background: #111118;
+    }
 
     /* chess board mini */
     .chess-mini-board {
       display: grid;
-      grid-template-columns: repeat(8,1fr);
-      width: 96px; height: 96px;
+      grid-template-columns: repeat(8, 1fr);
+      width: 96px;
+      height: 96px;
       border: 1px solid #2a3a4a;
     }
 
     .chess-mini-board div {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
     }
 
-    .chess-mini-board div.light { background: #b8cdd8; }
-    .chess-mini-board div.dark  { background: #3d6f8a; }
+    .chess-mini-board div.light {
+      background: #b8cdd8;
+    }
+
+    .chess-mini-board div.dark {
+      background: #3d6f8a;
+    }
 
     .game-badge {
       position: absolute;
-      top: 8px; right: 8px;
+      top: 8px;
+      right: 8px;
       font-family: 'Barlow Condensed', sans-serif;
       font-size: .65rem;
       font-weight: 700;
@@ -361,8 +410,17 @@
       border-radius: 4px;
     }
 
-    .badge-live     { background: #22c55e22; color: var(--green); border: 1px solid #22c55e44; }
-    .badge-soon     { background: #6a6a7a22; color: var(--muted); border: 1px solid #6a6a7a44; }
+    .badge-live {
+      background: #22c55e22;
+      color: var(--green);
+      border: 1px solid #22c55e44;
+    }
+
+    .badge-soon {
+      background: #6a6a7a22;
+      color: var(--muted);
+      border: 1px solid #6a6a7a44;
+    }
 
     .game-info {
       padding: .9rem 1rem;
@@ -397,15 +455,23 @@
     }
 
     .live-dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--green);
       animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: .3; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .3;
+      }
     }
 
     /* ════════════════════════════════
@@ -436,7 +502,8 @@
     }
 
     .mode-icon {
-      width: 36px; height: 36px;
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -445,11 +512,22 @@
       flex-shrink: 0;
     }
 
-    .mode-icon-cpu    { background: #1a3a5e; }
-    .mode-icon-local  { background: #1a3a2a; }
-    .mode-icon-online { background: #3a1a1a; }
+    .mode-icon-cpu {
+      background: #1a3a5e;
+    }
 
-    .mode-text { flex: 1; min-width: 0; }
+    .mode-icon-local {
+      background: #1a3a2a;
+    }
+
+    .mode-icon-online {
+      background: #3a1a1a;
+    }
+
+    .mode-text {
+      flex: 1;
+      min-width: 0;
+    }
 
     .mode-name {
       font-weight: 600;
@@ -494,7 +572,8 @@
     }
 
     .player-avatar {
-      width: 48px; height: 48px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-dim), var(--accent));
       display: flex;
@@ -518,7 +597,7 @@
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3,1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: .5rem;
     }
 
@@ -602,8 +681,13 @@
       transition: background .15s;
     }
 
-    .lb-row:last-child { border-bottom: none; }
-    .lb-row:hover { background: var(--surface2); }
+    .lb-row:last-child {
+      border-bottom: none;
+    }
+
+    .lb-row:hover {
+      background: var(--surface2);
+    }
 
     .lb-rank {
       font-family: 'Barlow Condensed', sans-serif;
@@ -615,10 +699,13 @@
       flex-shrink: 0;
     }
 
-    .lb-rank.top { color: var(--gold); }
+    .lb-rank.top {
+      color: var(--gold);
+    }
 
     .lb-avatar {
-      width: 28px; height: 28px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -629,7 +716,15 @@
       flex-shrink: 0;
     }
 
-    .lb-name { flex: 1; font-size: .88rem; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lb-name {
+      flex: 1;
+      font-size: .88rem;
+      font-weight: 500;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     .lb-elo {
       font-family: 'Barlow Condensed', sans-serif;
@@ -660,7 +755,9 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .activity-row:last-child { border-bottom: none; }
+    .activity-row:last-child {
+      border-bottom: none;
+    }
 
     .result-badge {
       font-size: .68rem;
@@ -673,12 +770,32 @@
       flex-shrink: 0;
     }
 
-    .result-w { background: #22c55e18; color: var(--green); }
-    .result-l { background: #ef444418; color: var(--red);   }
-    .result-d { background: #f59e0b18; color: var(--amber); }
+    .result-w {
+      background: #22c55e18;
+      color: var(--green);
+    }
 
-    .activity-text { flex: 1; font-size: .82rem; color: var(--muted); min-width: 0; }
-    .activity-text b { color: var(--text); font-weight: 600; }
+    .result-l {
+      background: #ef444418;
+      color: var(--red);
+    }
+
+    .result-d {
+      background: #f59e0b18;
+      color: var(--amber);
+    }
+
+    .activity-text {
+      flex: 1;
+      font-size: .82rem;
+      color: var(--muted);
+      min-width: 0;
+    }
+
+    .activity-text b {
+      color: var(--text);
+      font-weight: 600;
+    }
 
     .activity-elo {
       font-family: 'Barlow Condensed', sans-serif;
@@ -687,8 +804,13 @@
       flex-shrink: 0;
     }
 
-    .elo-up   { color: var(--green); }
-    .elo-down { color: var(--red);   }
+    .elo-up {
+      color: var(--green);
+    }
+
+    .elo-down {
+      color: var(--red);
+    }
 
     /* ════════════════════════════════
        BUTTONS
@@ -708,14 +830,18 @@
       transition: opacity .15s, transform .1s;
     }
 
-    .btn:active { transform: scale(.97); }
+    .btn:active {
+      transform: scale(.97);
+    }
 
     .btn-primary {
       background: var(--accent);
       color: #fff;
     }
 
-    .btn-primary:hover { opacity: .88; }
+    .btn-primary:hover {
+      opacity: .88;
+    }
 
     .btn-ghost {
       background: transparent;
@@ -723,12 +849,16 @@
       color: var(--text);
     }
 
-    .btn-ghost:hover { background: var(--surface2); }
+    .btn-ghost:hover {
+      background: var(--surface2);
+    }
 
     /* auth-gate overlay */
     .auth-gate {
-      position: fixed; inset: 0; z-index: 300;
-      background: rgba(0,0,0,.7);
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0, 0, 0, .7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -737,8 +867,13 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     .auth-gate-card {
@@ -749,25 +884,54 @@
       max-width: 380px;
       width: 100%;
       text-align: center;
-      animation: rise .25s cubic-bezier(.16,1,.3,1);
+      animation: rise .25s cubic-bezier(.16, 1, .3, 1);
     }
 
     @keyframes rise {
-      from { opacity: 0; transform: translateY(16px) scale(.97); }
-      to   { opacity: 1; transform: none; }
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
 
-    .auth-gate-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .auth-gate-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; margin-bottom: .5rem; }
-    .auth-gate-sub   { font-size: .9rem; color: var(--muted); margin-bottom: 1.5rem; }
-    .auth-gate-btns  { display: flex; gap: .75rem; justify-content: center; }
+    .auth-gate-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-gate-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+    }
+
+    .auth-gate-sub {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .auth-gate-btns {
+      display: flex;
+      gap: .75rem;
+      justify-content: center;
+    }
 
     /* ════════════════════════════════
        MODE MODAL
     ════════════════════════════════ */
     .modal-overlay {
-      position: fixed; inset: 0; z-index: 300;
-      background: rgba(0,0,0,.75);
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0, 0, 0, .75);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -782,7 +946,7 @@
       padding: 1.8rem;
       max-width: 420px;
       width: 100%;
-      animation: rise .25s cubic-bezier(.16,1,.3,1);
+      animation: rise .25s cubic-bezier(.16, 1, .3, 1);
     }
 
     .modal-title {
@@ -809,11 +973,27 @@
       transition: border-color .15s, background .15s;
     }
 
-    .modal-opt:hover { border-color: var(--accent); background: #1a2535; }
+    .modal-opt:hover {
+      border-color: var(--accent);
+      background: #1a2535;
+    }
 
-    .modal-opt-icon { font-size: 1.4rem; margin-bottom: .4rem; }
-    .modal-opt-name { font-weight: 600; font-size: .9rem; color: var(--text); }
-    .modal-opt-desc { font-size: .75rem; color: var(--muted); margin-top: .15rem; }
+    .modal-opt-icon {
+      font-size: 1.4rem;
+      margin-bottom: .4rem;
+    }
+
+    .modal-opt-name {
+      font-weight: 600;
+      font-size: .9rem;
+      color: var(--text);
+    }
+
+    .modal-opt-desc {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .15rem;
+    }
 
     .modal-close {
       margin-top: 1rem;
@@ -828,666 +1008,1015 @@
       cursor: pointer;
     }
 
-    .modal-close:hover { background: var(--surface); color: var(--text); }
+    .modal-close:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
 
     /* difficulty sub-modal */
-    .diff-list { display: flex; flex-direction: column; gap: .5rem; }
+    .diff-list {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+
     .diff-row {
-      display: flex; align-items: center; gap: .75rem;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: .65rem .9rem; cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .65rem .9rem;
+      cursor: pointer;
       transition: border-color .15s;
     }
-    .diff-row:hover { border-color: var(--accent); }
-    .diff-pip {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+
+    .diff-row:hover {
+      border-color: var(--accent);
     }
-    .diff-name { font-weight: 600; font-size: .9rem; }
-    .diff-desc { font-size: .75rem; color: var(--muted); flex: 1; text-align: right; }
+
+    .diff-pip {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .diff-name {
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    .diff-desc {
+      font-size: .75rem;
+      color: var(--muted);
+      flex: 1;
+      text-align: right;
+    }
 
     /* mode option rows (step 1) */
     .mode-opt-row {
-      display: flex; align-items: center; gap: .75rem;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: .8rem 1rem; cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+      cursor: pointer;
       transition: border-color .15s, background .15s;
     }
-    .mode-opt-row:hover { border-color: var(--accent); background: #1a2535; }
-    .mode-opt-icon {
-      width: 38px; height: 38px; border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; flex-shrink: 0;
+
+    .mode-opt-row:hover {
+      border-color: var(--accent);
+      background: #1a2535;
     }
-    .mode-opt-text { flex: 1; }
-    .mode-opt-name { font-weight: 600; font-size: .92rem; color: var(--text); }
-    .mode-opt-desc { font-size: .75rem; color: var(--muted); margin-top: .1rem; }
+
+    .mode-opt-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .mode-opt-text {
+      flex: 1;
+    }
+
+    .mode-opt-name {
+      font-weight: 600;
+      font-size: .92rem;
+      color: var(--text);
+    }
+
+    .mode-opt-desc {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+
     .mode-opt-arrow {
-      font-size: 1.3rem; color: var(--muted);
+      font-size: 1.3rem;
+      color: var(--muted);
       transition: transform .15s, color .15s;
     }
-    .mode-opt-row:hover .mode-opt-arrow { transform: translateX(3px); color: var(--accent); }
 
-    /* hidden utility */
-    .hidden { display: none !important; }
-  </style>
-</head>
-<body>
-
-<!-- ══ NAV ══════════════════════════════════════ -->
-<nav class="nav">
-  <a href="index.html" class="nav-logo">
-    <span class="nav-logo-dot"></span>
-    Game Arena
-  </a>
-
-  <div class="nav-right">
-    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
-
-    <!-- Logged-in state -->
-    <div id="navAuth" style="position:relative; display:none;">
-      <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
-        <span id="avatarInitials">?</span>
-      </button>
-      <div class="avatar-dropdown" id="avatarDropdown">
-        <div class="dropdown-user">
-          <div class="dropdown-user-name" id="dropdownName">—</div>
-          <div class="dropdown-user-elo" id="dropdownElo">Elo 0</div>
-        </div>
-        <a href="profile.html" class="dropdown-item">👤 My Profile</a>
-        <a href="leaderboard.html" class="dropdown-item">🏆 Leaderboard</a>
-        <div class="dropdown-item danger" id="logoutBtn">🚪 Sign Out</div>
-      </div>
-    </div>
-
-    <!-- Guest state -->
-    <div id="navGuest">
-      <a href="login.html" class="nav-link">Sign In</a>
-      <a href="signup.html"><button class="btn btn-primary" style="padding:.4rem .9rem;font-size:.82rem;">Join Free</button></a>
-    </div>
-  </div>
-</nav>
-
-<!-- ══ HERO ══════════════════════════════════════ -->
-<div class="hero">
-  <div class="hero-eyebrow">Welcome to</div>
-  <h1 class="hero-heading">Game <span>Arena</span></h1>
-  <p class="hero-sub">Compete, rank up, and dominate. Pick a game and start your climb.</p>
-</div>
-
-<!-- ══ STAT BAR ══════════════════════════════════ -->
-<div class="stat-bar" id="statBar">
-  <div class="stat-item">
-    <span class="stat-val" id="statGames">—</span>
-    <span class="stat-label">games played</span>
-  </div>
-  <div class="stat-divider"></div>
-  <div class="stat-item">
-    <span class="stat-val" id="statWins">—</span>
-    <span class="stat-label">wins</span>
-  </div>
-  <div class="stat-divider"></div>
-  <div class="stat-item">
-    <span class="stat-val" id="statElo">0</span>
-    <span class="stat-label">elo rating</span>
-  </div>
-  <div class="stat-divider"></div>
-  <div class="stat-item">
-    <span class="stat-val" id="statWinRate">—%</span>
-    <span class="stat-label">win rate</span>
-  </div>
-</div>
-
-<!-- ══ MAIN ══════════════════════════════════════ -->
-<div class="main">
-
-  <!-- LEFT COL -->
-  <div class="left-col">
-
-    <!-- Games -->
-    <div class="section-header">
-      <span class="section-title">Games</span>
-    </div>
-
-    <div class="games-grid">
-      <!-- Chess -->
-      <div class="game-card" id="chessCard">
-        <div class="game-thumb game-thumb-chess">
-          <div class="chess-mini-board" id="miniBoard"></div>
-          <span class="game-badge badge-live">Live</span>
-        </div>
-        <div class="game-info">
-          <div class="game-name">Chess</div>
-          <div class="game-desc">Play vs AI or challenge friends. Ranked & unranked.</div>
-          <div class="game-meta">
-            <span class="live-dot"></span>
-            <span class="game-players" id="chessPlayerCount">— online</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Placeholder: more games -->
-      <div class="game-card coming-soon">
-        <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🃏</div>
-        <div class="game-info">
-          <div class="game-name" style="color:var(--muted);">Card Game</div>
-          <div class="game-desc">Coming soon to Game Arena.</div>
-          <div class="game-meta">
-            <span class="game-badge badge-soon" style="position:static;">Soon</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="game-card coming-soon">
-        <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🎲</div>
-        <div class="game-info">
-          <div class="game-name" style="color:var(--muted);">Board Game</div>
-          <div class="game-desc">Coming soon to Game Arena.</div>
-          <div class="game-meta">
-            <span class="game-badge badge-soon" style="position:static;">Soon</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quick Play: Chess -->
-    <div class="section-header">
-      <span class="section-title">Quick Play — Chess</span>
-    </div>
-
-    <div class="mode-list">
-      <div class="mode-row" id="modeVsCPU">
-        <div class="mode-icon mode-icon-cpu">🤖</div>
-        <div class="mode-text">
-          <div class="mode-name">vs Computer</div>
-          <div class="mode-desc">Rookie to Grandmaster difficulty</div>
-        </div>
-        <span class="mode-arrow">→</span>
-      </div>
-
-      <div class="mode-row" id="modeLocal">
-        <div class="mode-icon mode-icon-local">👥</div>
-        <div class="mode-text">
-          <div class="mode-name">Local Multiplayer</div>
-          <div class="mode-desc">Pass & play on the same device</div>
-        </div>
-        <span class="mode-arrow">→</span>
-      </div>
-
-      <div class="mode-row" id="modeOnline">
-        <div class="mode-icon mode-icon-online">🌐</div>
-        <div class="mode-text">
-          <div class="mode-name">Play Online</div>
-          <div class="mode-desc">Ranked — requires account</div>
-        </div>
-        <span class="mode-arrow">→</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- RIGHT COL -->
-  <div class="right-col">
-
-    <!-- Player card (logged in) -->
-    <div class="player-card" id="playerCard" style="display:none;">
-      <div class="player-top">
-        <div class="player-avatar" id="playerAvatar">?</div>
-        <div>
-          <div class="player-name" id="playerName">—</div>
-          <div class="player-since" id="playerSince">Member</div>
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-box-val" id="pWins">0</div>
-          <div class="stat-box-label">Wins</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-val" id="pLosses">0</div>
-          <div class="stat-box-label">Losses</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-val" id="pDraws">0</div>
-          <div class="stat-box-label">Draws</div>
-        </div>
-      </div>
-      <div class="elo-row">
-        <span class="elo-label">♟ Chess Elo</span>
-        <span class="elo-val" id="pElo">0</span>
-      </div>
-    </div>
-
-    <!-- Join CTA (guest) -->
-    <div class="player-card" id="guestCard">
-      <div style="text-align:center; padding:.5rem 0;">
-        <div style="font-size:2rem; margin-bottom:.6rem;">♛</div>
-        <div style="font-weight:700; font-size:1rem; margin-bottom:.35rem;">Track your progress</div>
-        <div style="font-size:.82rem; color:var(--muted); margin-bottom:1.1rem;">Sign up to earn Elo, climb the leaderboard and save your games.</div>
-        <div style="display:flex; gap:.6rem; justify-content:center;">
-          <a href="signup.html"><button class="btn btn-primary">Create Account</button></a>
-          <a href="login.html"><button class="btn btn-ghost">Sign In</button></a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mini leaderboard -->
-    <div class="lb-card">
-      <div class="lb-header">
-        <span class="lb-title">Top Players</span>
-        <a href="leaderboard.html" class="section-action" style="font-size:.78rem;">View all →</a>
-      </div>
-      <div id="lbList">
-        <!-- populated by JS -->
-        <div style="padding:1.5rem; text-align:center; color:var(--muted); font-size:.85rem;">Loading…</div>
-      </div>
-    </div>
-
-    <!-- Recent games (logged in) -->
-    <div class="activity-card" id="recentCard" style="display:none;">
-      <div class="activity-header">
-        <span class="section-title">Recent Games</span>
-      </div>
-      <div id="recentList">
-        <div style="padding:1.2rem; text-align:center; color:var(--muted); font-size:.85rem;">No games yet.</div>
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ══ GAME MODE MODAL ════════════════════════════ -->
-<div class="modal-overlay hidden" id="gameModeModal">
-  <div class="modal" style="max-width:400px;">
-
-    <!-- Step 1: Pick mode -->
-    <div id="stepMode">
-      <div class="modal-title" style="display:flex;align-items:center;gap:.6rem;">
-        <span>♟</span> Play Chess
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.5rem;">
-
-        <div class="mode-opt-row" id="optVsCPU">
-          <div class="mode-opt-icon" style="background:#1a3a5e;">🤖</div>
-          <div class="mode-opt-text">
-            <div class="mode-opt-name">vs Computer</div>
-            <div class="mode-opt-desc">Challenge the AI — pick your difficulty</div>
-          </div>
-          <span class="mode-opt-arrow">›</span>
-        </div>
-
-        <div class="mode-opt-row" id="optLocal">
-          <div class="mode-opt-icon" style="background:#1a3a2a;">👥</div>
-          <div class="mode-opt-text">
-            <div class="mode-opt-name">Local Multiplayer</div>
-            <div class="mode-opt-desc">Pass &amp; play on the same device</div>
-          </div>
-          <span class="mode-opt-arrow">›</span>
-        </div>
-
-        <div class="mode-opt-row" id="optOnline">
-          <div class="mode-opt-icon" style="background:#3a1a1a;">🌐</div>
-          <div class="mode-opt-text">
-            <div class="mode-opt-name">Play Online</div>
-            <div class="mode-opt-desc">Ranked — requires account</div>
-          </div>
-          <span class="mode-opt-arrow">›</span>
-        </div>
-
-      </div>
-      <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
-    </div>
-
-    <!-- Step 2: Pick difficulty (vs CPU only) -->
-    <div id="stepDifficulty" style="display:none;">
-      <div class="modal-title" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;" id="backToMode">
-        <span style="font-size:1rem;color:var(--muted);">‹</span>
-        <span>Choose Difficulty</span>
-      </div>
-      <div class="diff-list">
-        <div class="diff-row" onclick="startChess('cpu','rookie')">
-          <span class="diff-pip" style="background:#6a6a7a;"></span>
-          <span class="diff-name">Rookie</span>
-          <span class="diff-desc">Random moves, very easy</span>
-        </div>
-        <div class="diff-row" onclick="startChess('cpu','beginner')">
-          <span class="diff-pip" style="background:#22c55e;"></span>
-          <span class="diff-name">Beginner</span>
-          <span class="diff-desc">Takes free pieces</span>
-        </div>
-        <div class="diff-row" onclick="startChess('cpu','amateur')">
-          <span class="diff-pip" style="background:#3b8aff;"></span>
-          <span class="diff-name">Amateur</span>
-          <span class="diff-desc">Depth-2 minimax</span>
-        </div>
-        <div class="diff-row" onclick="startChess('cpu','pro')">
-          <span class="diff-pip" style="background:#f59e0b;"></span>
-          <span class="diff-name">Pro</span>
-          <span class="diff-desc">Depth-3 + quiescence</span>
-        </div>
-        <div class="diff-row" onclick="startChess('cpu','grandmaster')">
-          <span class="diff-pip" style="background:#ef4444;"></span>
-          <span class="diff-name">Grandmaster</span>
-          <span class="diff-desc">Iterative deepening, brutal</span>
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ══ AUTH GATE ══════════════════════════════════ -->
-<div class="auth-gate hidden" id="authGate">
-  <div class="auth-gate-card">
-    <div class="auth-gate-icon">🔒</div>
-    <div class="auth-gate-title">Sign in to play online</div>
-    <div class="auth-gate-sub">Ranked online play requires an account so your Elo is tracked.</div>
-    <div class="auth-gate-btns">
-      <a href="login.html"><button class="btn btn-primary">Sign In</button></a>
-      <a href="signup.html"><button class="btn btn-ghost">Sign Up</button></a>
-    </div>
-    <div style="margin-top:.85rem; text-align:center;">
-      <button onclick="closeModal('authGate')" style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp }         from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth,
-           onAuthStateChanged,
-           signOut }               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore,
-           doc, getDoc,
-           collection, query,
-           where, orderBy,
-           limit, getDocs }        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getDatabase,
-           ref, get }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey:            "AIzaSyD37HMOW2F3bNIlN8A2uZKz3Jha6PTpdRM",
-    authDomain:        "game-arena-30870.firebaseapp.com",
-    databaseURL:       "https://game-arena-30870-default-rtdb.firebaseio.com",
-    projectId:         "game-arena-30870",
-    storageBucket:     "game-arena-30870.firebasestorage.app",
-    messagingSenderId: "229549562058",
-    appId:             "1:229549562058:web:a1c6106644379c2d2187c33",
-    measurementId:     "G-LC5EJVLTLQ",
-  };
-
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-  const rtdb = getDatabase(app);
-
-  // ── Auth state ──
-  let currentUser = null;
-
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-
-    if (user) {
-      showLoggedIn(user);
-      await loadProfile(user.uid);
-      await loadRecentGames(user.uid);
-    } else {
-      showGuest();
+    .mode-opt-row:hover .mode-opt-arrow {
+      transform: translateX(3px);
+      color: var(--accent);
     }
 
-    await loadLeaderboard();
-    await loadOnlineCount();
-  });
+    /* hidden utility */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
 
-  // ── UI: logged-in ──
-  function showLoggedIn(user) {
-    const initials = (user.displayName || user.email || "?")
-      .split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+<body>
 
-    document.getElementById("navAuth").style.display    = "flex";
-    document.getElementById("navGuest").style.display   = "none";
-    document.getElementById("avatarInitials").textContent = initials;
-    document.getElementById("dropdownName").textContent  = user.displayName || "Player";
-    document.getElementById("playerCard").style.display  = "block";
-    document.getElementById("guestCard").style.display   = "none";
-    document.getElementById("recentCard").style.display  = "block";
-    document.getElementById("playerAvatar").textContent  = initials;
-  }
+  <!-- ══ NAV ══════════════════════════════════════ -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-dot"></span>
+      Game Arena
+    </a>
 
-  // ── UI: guest ──
-  function showGuest() {
-    document.getElementById("navAuth").style.display   = "none";
-    document.getElementById("navGuest").style.display  = "flex";
-    document.getElementById("playerCard").style.display = "none";
-    document.getElementById("guestCard").style.display  = "block";
-    document.getElementById("recentCard").style.display = "none";
-    document.getElementById("statBar").style.display    = "none";
-  }
+    <div class="nav-right">
+      <a href="leaderboard.html" class="nav-link">Leaderboard</a>
 
-  // ── Load profile ──
-  async function loadProfile(uid) {
-    try {
-      const snap = await getDoc(doc(db, "users", uid));
-      if (!snap.exists()) return;
-      const data  = snap.data();
-      const stats = data.stats || {};
+      <!-- Logged-in state -->
+      <div id="navAuth" style="position:relative; display:none;">
+        <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
+          <span id="avatarInitials">?</span>
+        </button>
+        <div class="avatar-dropdown" id="avatarDropdown">
+          <div class="dropdown-user">
+            <div class="dropdown-user-name" id="dropdownName">—</div>
+            <div class="dropdown-user-elo" id="dropdownElo">Elo 0</div>
+          </div>
+          <a href="profile.html" class="dropdown-item">👤 My Profile</a>
+          <a href="leaderboard.html" class="dropdown-item">🏆 Leaderboard</a>
+          <div class="dropdown-item danger" id="logoutBtn">🚪 Sign Out</div>
+        </div>
+      </div>
 
-      const name = data.username || currentUser.displayName || "Player";
-      document.getElementById("playerName").textContent  = name;
-      document.getElementById("dropdownName").textContent = name;
+      <!-- Guest state -->
+      <div id="navGuest">
+        <a href="login.html" class="nav-link">Sign In</a>
+        <a href="signup.html"><button class="btn btn-primary" style="padding:.4rem .9rem;font-size:.82rem;">Join
+            Free</button></a>
+      </div>
+    </div>
+  </nav>
 
-      const joined = data.createdAt?.toDate?.();
-      if (joined) {
-        document.getElementById("playerSince").textContent =
-          "Member since " + joined.toLocaleDateString("en-MY", { month: "short", year: "numeric" });
+  <!-- ══ HERO ══════════════════════════════════════ -->
+  <div class="hero">
+    <div class="hero-eyebrow">Welcome to</div>
+    <h1 class="hero-heading">Game <span>Arena</span></h1>
+    <p class="hero-sub">Compete, rank up, and dominate. Pick a game and start your climb.</p>
+  </div>
+
+  <!-- ══ STAT BAR ══════════════════════════════════ -->
+  <div class="stat-bar" id="statBar">
+    <div class="stat-item">
+      <span class="stat-val" id="statGames">—</span>
+      <span class="stat-label">games played</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val" id="statWins">—</span>
+      <span class="stat-label">wins</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val" id="statElo">0</span>
+      <span class="stat-label">elo rating</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val" id="statWinRate">—%</span>
+      <span class="stat-label">win rate</span>
+    </div>
+  </div>
+
+  <!-- ══ MAIN ══════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- LEFT COL -->
+    <div class="left-col">
+
+      <!-- Games -->
+      <div class="section-header">
+        <span class="section-title">Games</span>
+      </div>
+
+      <div class="games-grid">
+        <!-- Chess -->
+        <div class="game-card" id="chessCard">
+          <div class="game-thumb game-thumb-chess">
+            <div class="chess-mini-board" id="miniBoard"></div>
+            <span class="game-badge badge-live">Live</span>
+          </div>
+          <div class="game-info">
+            <div class="game-name">Chess</div>
+            <div class="game-desc">Play vs AI or challenge friends. Ranked & unranked.</div>
+            <div class="game-meta">
+              <span class="live-dot"></span>
+              <span class="game-players" id="chessPlayerCount">— online</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Battleship -->
+        <div class="game-card" id="battleshipCard">
+          <div class="game-thumb" style="background:#08192a; position:relative; overflow:hidden;">
+            <div
+              style="display:grid;grid-template-columns:repeat(8,1fr);width:96px;height:96px;gap:1px;background:#0a1f30;border:1px solid #1a3a4a;border-radius:2px;">
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#ef4444"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#1e3a4a"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#1e3a4a"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#ef4444"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#1e3a4a"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#7f1d1d"></div>
+              <div style="background:#7f1d1d"></div>
+              <div style="background:#7f1d1d"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#1e3a4a"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#1e3a4a"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#0e2233"></div>
+              <div style="background:#4a7a9b"></div>
+              <div style="background:#4a7a9b"></div>
+            </div>
+            <span class="game-badge badge-live">Live</span>
+          </div>
+          <div class="game-info">
+            <div class="game-name">Battleship</div>
+            <div class="game-desc">Sink the fleet before they sink yours. Ranked &amp; unranked.</div>
+            <div class="game-meta">
+              <span class="live-dot"></span>
+              <span class="game-players" id="battleshipPlayerCount">— online</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder: more games -->
+        <div class="game-card coming-soon">
+          <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🃏</div>
+          <div class="game-info">
+            <div class="game-name" style="color:var(--muted);">Card Game</div>
+            <div class="game-desc">Coming soon to Game Arena.</div>
+            <div class="game-meta">
+              <span class="game-badge badge-soon" style="position:static;">Soon</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card coming-soon">
+          <div class="game-thumb game-thumb-soon" style="font-size:2.5rem; color:#2a2a3a;">🎲</div>
+          <div class="game-info">
+            <div class="game-name" style="color:var(--muted);">Board Game</div>
+            <div class="game-desc">Coming soon to Game Arena.</div>
+            <div class="game-meta">
+              <span class="game-badge badge-soon" style="position:static;">Soon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Play: Chess -->
+      <div class="section-header">
+        <span class="section-title">Quick Play — Chess</span>
+      </div>
+
+      <div class="mode-list">
+        <div class="mode-row" id="modeVsCPU">
+          <div class="mode-icon mode-icon-cpu">🤖</div>
+          <div class="mode-text">
+            <div class="mode-name">vs Computer</div>
+            <div class="mode-desc">Rookie to Grandmaster difficulty</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+
+        <div class="mode-row" id="modeLocal">
+          <div class="mode-icon mode-icon-local">👥</div>
+          <div class="mode-text">
+            <div class="mode-name">Local Multiplayer</div>
+            <div class="mode-desc">Pass & play on the same device</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+
+        <div class="mode-row" id="modeOnline">
+          <div class="mode-icon mode-icon-online">🌐</div>
+          <div class="mode-text">
+            <div class="mode-name">Play Online</div>
+            <div class="mode-desc">Ranked — requires account</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Quick Play: Battleship -->
+      <div class="section-header">
+        <span class="section-title">Quick Play — Battleship</span>
+      </div>
+
+      <div class="mode-list">
+        <div class="mode-row" id="bsModeVsCPU">
+          <div class="mode-icon" style="background:#082033;">🤖</div>
+          <div class="mode-text">
+            <div class="mode-name">vs Computer</div>
+            <div class="mode-desc">Rookie to Grandmaster difficulty</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+
+        <div class="mode-row" id="bsModeLocal">
+          <div class="mode-icon" style="background:#0a2a1a;">👥</div>
+          <div class="mode-text">
+            <div class="mode-name">Local Multiplayer</div>
+            <div class="mode-desc">Pass &amp; play on the same device</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+
+        <div class="mode-row" id="bsModeOnline">
+          <div class="mode-icon" style="background:#2a0a0a;">🌐</div>
+          <div class="mode-text">
+            <div class="mode-name">Play Online</div>
+            <div class="mode-desc">Ranked — requires account</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+
+        <div class="mode-row" id="bsModeSolo">
+          <div class="mode-icon" style="background:#1a1a0a;">🎯</div>
+          <div class="mode-text">
+            <div class="mode-name">Solo Practice</div>
+            <div class="mode-desc">Place ships, practice targeting</div>
+          </div>
+          <span class="mode-arrow">→</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="right-col">
+
+      <!-- Player card (logged in) -->
+      <div class="player-card" id="playerCard" style="display:none;">
+        <div class="player-top">
+          <div class="player-avatar" id="playerAvatar">?</div>
+          <div>
+            <div class="player-name" id="playerName">—</div>
+            <div class="player-since" id="playerSince">Member</div>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-box-val" id="pWins">0</div>
+            <div class="stat-box-label">Wins</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-val" id="pLosses">0</div>
+            <div class="stat-box-label">Losses</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-val" id="pDraws">0</div>
+            <div class="stat-box-label">Draws</div>
+          </div>
+        </div>
+        <div class="elo-row">
+          <span class="elo-label">♟ Chess Elo</span>
+          <span class="elo-val" id="pElo">0</span>
+        </div>
+      </div>
+
+      <!-- Join CTA (guest) -->
+      <div class="player-card" id="guestCard">
+        <div style="text-align:center; padding:.5rem 0;">
+          <div style="font-size:2rem; margin-bottom:.6rem;">♛</div>
+          <div style="font-weight:700; font-size:1rem; margin-bottom:.35rem;">Track your progress</div>
+          <div style="font-size:.82rem; color:var(--muted); margin-bottom:1.1rem;">Sign up to earn Elo, climb the
+            leaderboard and save your games.</div>
+          <div style="display:flex; gap:.6rem; justify-content:center;">
+            <a href="signup.html"><button class="btn btn-primary">Create Account</button></a>
+            <a href="login.html"><button class="btn btn-ghost">Sign In</button></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini leaderboard -->
+      <div class="lb-card">
+        <div class="lb-header">
+          <span class="lb-title">Top Players</span>
+          <a href="leaderboard.html" class="section-action" style="font-size:.78rem;">View all →</a>
+        </div>
+        <div id="lbList">
+          <!-- populated by JS -->
+          <div style="padding:1.5rem; text-align:center; color:var(--muted); font-size:.85rem;">Loading…</div>
+        </div>
+      </div>
+
+      <!-- Recent games (logged in) -->
+      <div class="activity-card" id="recentCard" style="display:none;">
+        <div class="activity-header">
+          <span class="section-title">Recent Games</span>
+        </div>
+        <div id="recentList">
+          <div style="padding:1.2rem; text-align:center; color:var(--muted); font-size:.85rem;">No games yet.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ══ GAME MODE MODAL ════════════════════════════ -->
+  <div class="modal-overlay hidden" id="gameModeModal">
+    <div class="modal" style="max-width:400px;">
+
+      <!-- Step 1: Pick mode -->
+      <div id="stepMode">
+        <div class="modal-title" style="display:flex;align-items:center;gap:.6rem;">
+          <span>♟</span> Play Chess
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+
+          <div class="mode-opt-row" id="optVsCPU">
+            <div class="mode-opt-icon" style="background:#1a3a5e;">🤖</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">vs Computer</div>
+              <div class="mode-opt-desc">Challenge the AI — pick your difficulty</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+          <div class="mode-opt-row" id="optLocal">
+            <div class="mode-opt-icon" style="background:#1a3a2a;">👥</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">Local Multiplayer</div>
+              <div class="mode-opt-desc">Pass &amp; play on the same device</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+          <div class="mode-opt-row" id="optOnline">
+            <div class="mode-opt-icon" style="background:#3a1a1a;">🌐</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">Play Online</div>
+              <div class="mode-opt-desc">Ranked — requires account</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+        </div>
+        <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
+      </div>
+
+      <!-- Step 2: Pick difficulty (vs CPU only) -->
+      <div id="stepDifficulty" style="display:none;">
+        <div class="modal-title" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;" id="backToMode">
+          <span style="font-size:1rem;color:var(--muted);">‹</span>
+          <span>Choose Difficulty</span>
+        </div>
+        <div class="diff-list">
+          <div class="diff-row" onclick="startChess('cpu','rookie')">
+            <span class="diff-pip" style="background:#6a6a7a;"></span>
+            <span class="diff-name">Rookie</span>
+            <span class="diff-desc">Random moves, very easy</span>
+          </div>
+          <div class="diff-row" onclick="startChess('cpu','beginner')">
+            <span class="diff-pip" style="background:#22c55e;"></span>
+            <span class="diff-name">Beginner</span>
+            <span class="diff-desc">Takes free pieces</span>
+          </div>
+          <div class="diff-row" onclick="startChess('cpu','amateur')">
+            <span class="diff-pip" style="background:#3b8aff;"></span>
+            <span class="diff-name">Amateur</span>
+            <span class="diff-desc">Depth-2 minimax</span>
+          </div>
+          <div class="diff-row" onclick="startChess('cpu','pro')">
+            <span class="diff-pip" style="background:#f59e0b;"></span>
+            <span class="diff-name">Pro</span>
+            <span class="diff-desc">Depth-3 + quiescence</span>
+          </div>
+          <div class="diff-row" onclick="startChess('cpu','grandmaster')">
+            <span class="diff-pip" style="background:#ef4444;"></span>
+            <span class="diff-name">Grandmaster</span>
+            <span class="diff-desc">Iterative deepening, brutal</span>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('gameModeModal')">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ BATTLESHIP MODE MODAL ══════════════════════ -->
+  <div class="modal-overlay hidden" id="bsGameModeModal">
+    <div class="modal" style="max-width:400px;">
+
+      <div id="bsStepMode">
+        <div class="modal-title" style="display:flex;align-items:center;gap:.6rem;">
+          <span>🚢</span> Play Battleship
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+
+          <div class="mode-opt-row" id="bsOptVsCPU">
+            <div class="mode-opt-icon" style="background:#082033;">🤖</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">vs Computer</div>
+              <div class="mode-opt-desc">Challenge the AI — pick your difficulty</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+          <div class="mode-opt-row" id="bsOptLocal">
+            <div class="mode-opt-icon" style="background:#0a2a1a;">👥</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">Local Multiplayer</div>
+              <div class="mode-opt-desc">Pass &amp; play on the same device</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+          <div class="mode-opt-row" id="bsOptOnline">
+            <div class="mode-opt-icon" style="background:#2a0a0a;">🌐</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">Play Online</div>
+              <div class="mode-opt-desc">Ranked — requires account</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+          <div class="mode-opt-row" id="bsOptSolo">
+            <div class="mode-opt-icon" style="background:#1a1a0a;">🎯</div>
+            <div class="mode-opt-text">
+              <div class="mode-opt-name">Solo Practice</div>
+              <div class="mode-opt-desc">No opponent — just you vs the sea</div>
+            </div>
+            <span class="mode-opt-arrow">›</span>
+          </div>
+
+        </div>
+        <button class="modal-close" onclick="closeModal('bsGameModeModal')">Cancel</button>
+      </div>
+
+      <div id="bsStepDifficulty" style="display:none;">
+        <div class="modal-title" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;" id="bsBackToMode">
+          <span style="font-size:1rem;color:var(--muted);">‹</span>
+          <span>Choose Difficulty</span>
+        </div>
+        <div class="diff-list">
+          <div class="diff-row" onclick="startBattleship('cpu','rookie')">
+            <span class="diff-pip" style="background:#6a6a7a;"></span>
+            <span class="diff-name">Rookie</span>
+            <span class="diff-desc">Shoots randomly, no strategy</span>
+          </div>
+          <div class="diff-row" onclick="startBattleship('cpu','beginner')">
+            <span class="diff-pip" style="background:#22c55e;"></span>
+            <span class="diff-name">Beginner</span>
+            <span class="diff-desc">Follows up on hits</span>
+          </div>
+          <div class="diff-row" onclick="startBattleship('cpu','amateur')">
+            <span class="diff-pip" style="background:#3b8aff;"></span>
+            <span class="diff-name">Amateur</span>
+            <span class="diff-desc">Hunt &amp; target with direction lock</span>
+          </div>
+          <div class="diff-row" onclick="startBattleship('cpu','pro')">
+            <span class="diff-pip" style="background:#f59e0b;"></span>
+            <span class="diff-name">Pro</span>
+            <span class="diff-desc">Probability density targeting</span>
+          </div>
+          <div class="diff-row" onclick="startBattleship('cpu','grandmaster')">
+            <span class="diff-pip" style="background:#ef4444;"></span>
+            <span class="diff-name">Grandmaster</span>
+            <span class="diff-desc">Near-optimal parity + probability</span>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('bsGameModeModal')">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ AUTH GATE ══════════════════════════════════ -->
+  <div class="auth-gate hidden" id="authGate">
+    <div class="auth-gate-card">
+      <div class="auth-gate-icon">🔒</div>
+      <div class="auth-gate-title">Sign in to play online</div>
+      <div class="auth-gate-sub">Ranked online play requires an account so your Elo is tracked.</div>
+      <div class="auth-gate-btns">
+        <a href="login.html"><button class="btn btn-primary">Sign In</button></a>
+        <a href="signup.html"><button class="btn btn-ghost">Sign Up</button></a>
+      </div>
+      <div style="margin-top:.85rem; text-align:center;">
+        <button onclick="closeModal('authGate')"
+          style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc, getDoc,
+      collection, query,
+      where, orderBy,
+      limit, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getDatabase,
+      ref, get
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD37HMOW2F3bNIlN8A2uZKz3Jha6PTpdRM",
+      authDomain: "game-arena-30870.firebaseapp.com",
+      databaseURL: "https://game-arena-30870-default-rtdb.firebaseio.com",
+      projectId: "game-arena-30870",
+      storageBucket: "game-arena-30870.firebasestorage.app",
+      messagingSenderId: "229549562058",
+      appId: "1:229549562058:web:a1c6106644379c2d2187c33",
+      measurementId: "G-LC5EJVLTLQ",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const rtdb = getDatabase(app);
+
+    // ── Auth state ──
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+
+      if (user) {
+        showLoggedIn(user);
+        await loadProfile(user.uid);
+        await loadRecentGames(user.uid);
+      } else {
+        showGuest();
       }
 
-      document.getElementById("pWins").textContent   = stats.wins   || 0;
-      document.getElementById("pLosses").textContent = stats.losses || 0;
-      document.getElementById("pDraws").textContent  = stats.draws  || 0;
-      document.getElementById("pElo").textContent    = stats.elo    || 0;
+      await loadLeaderboard();
+      await loadOnlineCount();
+      // Battleship online count
+      try {
+        const bsSnap = await get(ref(rtdb, "bs_rooms"));
+        const bsRooms = bsSnap.val() || {};
+        const bsActive = Object.values(bsRooms).filter(r => r.status === "active").length;
+        const bsEl = document.getElementById("battleshipPlayerCount");
+        if (bsEl) bsEl.textContent = (bsActive * 2) + " online";
+      } catch { }
+    });
 
-      // stat bar
-      document.getElementById("statGames").textContent  = stats.gamesPlayed || 0;
-      document.getElementById("statWins").textContent   = stats.wins        || 0;
-      document.getElementById("statElo").textContent    = stats.elo         || 0;
-      document.getElementById("statWinRate").textContent = ((stats.winRate || 0) * 100).toFixed(0) + "%";
-      document.getElementById("dropdownElo").textContent = "Elo " + (stats.elo || 0);
-    } catch (e) { console.error(e); }
-  }
+    // ── UI: logged-in ──
+    function showLoggedIn(user) {
+      const initials = (user.displayName || user.email || "?")
+        .split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 
-  // ── Load leaderboard (top 5) ──
-  async function loadLeaderboard() {
-    try {
-      const q = query(
-        collection(db, "leaderboard"),
-        where("isPublic", "==", true),
-        where("gamesPlayed", ">=", 1),
-        orderBy("gamesPlayed"),
-        orderBy("elo", "desc"),
-        limit(5)
-      );
-      const snap = await getDocs(q);
+      document.getElementById("navAuth").style.display = "flex";
+      document.getElementById("navGuest").style.display = "none";
+      document.getElementById("avatarInitials").textContent = initials;
+      document.getElementById("dropdownName").textContent = user.displayName || "Player";
+      document.getElementById("playerCard").style.display = "block";
+      document.getElementById("guestCard").style.display = "none";
+      document.getElementById("recentCard").style.display = "block";
+      document.getElementById("playerAvatar").textContent = initials;
+    }
 
-      const colors = ["#3b8aff","#22c55e","#f59e0b","#ef4444","#a78bfa"];
-      const lbList = document.getElementById("lbList");
+    // ── UI: guest ──
+    function showGuest() {
+      document.getElementById("navAuth").style.display = "none";
+      document.getElementById("navGuest").style.display = "flex";
+      document.getElementById("playerCard").style.display = "none";
+      document.getElementById("guestCard").style.display = "block";
+      document.getElementById("recentCard").style.display = "none";
+      document.getElementById("statBar").style.display = "none";
+    }
 
-      if (snap.empty) {
-        lbList.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No ranked players yet.</div>`;
-        return;
-      }
+    // ── Load profile ──
+    async function loadProfile(uid) {
+      try {
+        const snap = await getDoc(doc(db, "users", uid));
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const stats = data.stats || {};
 
-      lbList.innerHTML = snap.docs.map((d, i) => {
-        const p = d.data();
-        const initials = (p.username || "?").slice(0,2).toUpperCase();
-        const isTop = i < 3;
-        return `
+        const name = data.username || currentUser.displayName || "Player";
+        document.getElementById("playerName").textContent = name;
+        document.getElementById("dropdownName").textContent = name;
+
+        const joined = data.createdAt?.toDate?.();
+        if (joined) {
+          document.getElementById("playerSince").textContent =
+            "Member since " + joined.toLocaleDateString("en-MY", { month: "short", year: "numeric" });
+        }
+
+        document.getElementById("pWins").textContent = stats.wins || 0;
+        document.getElementById("pLosses").textContent = stats.losses || 0;
+        document.getElementById("pDraws").textContent = stats.draws || 0;
+        document.getElementById("pElo").textContent = stats.elo || 0;
+
+        // stat bar
+        document.getElementById("statGames").textContent = stats.gamesPlayed || 0;
+        document.getElementById("statWins").textContent = stats.wins || 0;
+        document.getElementById("statElo").textContent = stats.elo || 0;
+        document.getElementById("statWinRate").textContent = ((stats.winRate || 0) * 100).toFixed(0) + "%";
+        document.getElementById("dropdownElo").textContent = "Elo " + (stats.elo || 0);
+      } catch (e) { console.error(e); }
+    }
+
+    // ── Load leaderboard (top 5) ──
+    async function loadLeaderboard() {
+      try {
+        const q = query(
+          collection(db, "leaderboard"),
+          where("isPublic", "==", true),
+          where("gamesPlayed", ">=", 1),
+          orderBy("gamesPlayed"),
+          orderBy("elo", "desc"),
+          limit(5)
+        );
+        const snap = await getDocs(q);
+
+        const colors = ["#3b8aff", "#22c55e", "#f59e0b", "#ef4444", "#a78bfa"];
+        const lbList = document.getElementById("lbList");
+
+        if (snap.empty) {
+          lbList.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No ranked players yet.</div>`;
+          return;
+        }
+
+        lbList.innerHTML = snap.docs.map((d, i) => {
+          const p = d.data();
+          const initials = (p.username || "?").slice(0, 2).toUpperCase();
+          const isTop = i < 3;
+          return `
           <div class="lb-row">
             <span class="lb-rank ${isTop ? "top" : ""}">${i + 1}</span>
             <div class="lb-avatar" style="background:${colors[i] || "#6a6a7a"}">${initials}</div>
             <span class="lb-name">${p.username || "Player"}</span>
             <span class="lb-elo">${p.elo || 0}</span>
           </div>`;
-      }).join("");
-    } catch (e) { console.error(e); }
-  }
+        }).join("");
+      } catch (e) { console.error(e); }
+    }
 
-  // ── Load recent games ──
-  async function loadRecentGames(uid) {
-    try {
-      const [wSnap, bSnap] = await Promise.all([
-        getDocs(query(collection(db,"games"), where("white.uid","==",uid), orderBy("playedAt","desc"), limit(5))),
-        getDocs(query(collection(db,"games"), where("black.uid","==",uid), orderBy("playedAt","desc"), limit(5))),
-      ]);
+    // ── Load recent games ──
+    async function loadRecentGames(uid) {
+      try {
+        const [wSnap, bSnap] = await Promise.all([
+          getDocs(query(collection(db, "games"), where("white.uid", "==", uid), orderBy("playedAt", "desc"), limit(5))),
+          getDocs(query(collection(db, "games"), where("black.uid", "==", uid), orderBy("playedAt", "desc"), limit(5))),
+        ]);
 
-      const all = [
-        ...wSnap.docs.map(d=>({...d.data(), playerColor:"white"})),
-        ...bSnap.docs.map(d=>({...d.data(), playerColor:"black"})),
-      ].sort((a,b)=>(b.playedAt?.seconds||0)-(a.playedAt?.seconds||0)).slice(0,5);
+        const all = [
+          ...wSnap.docs.map(d => ({ ...d.data(), playerColor: "white" })),
+          ...bSnap.docs.map(d => ({ ...d.data(), playerColor: "black" })),
+        ].sort((a, b) => (b.playedAt?.seconds || 0) - (a.playedAt?.seconds || 0)).slice(0, 5);
 
-      const list = document.getElementById("recentList");
+        const list = document.getElementById("recentList");
 
-      if (!all.length) {
-        list.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No games yet. Play your first game!</div>`;
-        return;
-      }
+        if (!all.length) {
+          list.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.85rem;">No games yet. Play your first game!</div>`;
+          return;
+        }
 
-      list.innerHTML = all.map(g => {
-        const isWhite   = g.playerColor === "white";
-        const opponent  = isWhite ? g.black?.username : g.white?.username;
-        const myNewElo  = isWhite ? g.white?.newElo : g.black?.newElo;
-        const myOldElo  = isWhite ? g.white?.elo    : g.black?.elo;
-        const eloChange = myNewElo && myOldElo ? myNewElo - myOldElo : null;
+        list.innerHTML = all.map(g => {
+          const isWhite = g.playerColor === "white";
+          const opponent = isWhite ? g.black?.username : g.white?.username;
+          const myNewElo = isWhite ? g.white?.newElo : g.black?.newElo;
+          const myOldElo = isWhite ? g.white?.elo : g.black?.elo;
+          const eloChange = myNewElo && myOldElo ? myNewElo - myOldElo : null;
 
-        let res, cls;
-        if (g.result === g.playerColor)       { res = "W"; cls = "result-w"; }
-        else if (g.result === "draw")          { res = "D"; cls = "result-d"; }
-        else                                   { res = "L"; cls = "result-l"; }
+          let res, cls;
+          if (g.result === g.playerColor) { res = "W"; cls = "result-w"; }
+          else if (g.result === "draw") { res = "D"; cls = "result-d"; }
+          else { res = "L"; cls = "result-l"; }
 
-        const eloHtml = eloChange !== null
-          ? `<span class="activity-elo ${eloChange >= 0 ? "elo-up" : "elo-down"}">${eloChange >= 0 ? "+" : ""}${eloChange}</span>`
-          : "";
+          const eloHtml = eloChange !== null
+            ? `<span class="activity-elo ${eloChange >= 0 ? "elo-up" : "elo-down"}">${eloChange >= 0 ? "+" : ""}${eloChange}</span>`
+            : "";
 
-        return `
+          return `
           <div class="activity-row">
             <span class="result-badge ${cls}">${res}</span>
             <span class="activity-text">vs <b>${opponent || "Unknown"}</b> · ${g.reason || ""}</span>
             ${eloHtml}
           </div>`;
-      }).join("");
-    } catch (e) { console.error(e); }
-  }
-
-  // ── Online player count (rooms in rtdb) ──
-  async function loadOnlineCount() {
-    try {
-      const snap = await get(ref(rtdb, "rooms"));
-      const rooms = snap.val() || {};
-      const active = Object.values(rooms).filter(r => r.status === "active").length;
-      const count  = active * 2;
-      document.getElementById("chessPlayerCount").textContent = count + " online";
-    } catch { }
-  }
-
-  // ── Dropdown toggle ──
-  const avatarBtn      = document.getElementById("avatarBtn");
-  const avatarDropdown = document.getElementById("avatarDropdown");
-
-  avatarBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    avatarDropdown.classList.toggle("open");
-  });
-
-  document.addEventListener("click", () => avatarDropdown.classList.remove("open"));
-
-  // ── Logout ──
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.reload();
-  });
-
-  // ── Expose for inline handlers ──
-  window._currentUser = () => currentUser;
-</script>
-
-<!-- Non-module JS for inline handlers -->
-<script>
-  // Build mini chess board
-  const miniBoard = document.getElementById("miniBoard");
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const sq = document.createElement("div");
-      sq.className = (r + c) % 2 === 0 ? "light" : "dark";
-      miniBoard.appendChild(sq);
+        }).join("");
+      } catch (e) { console.error(e); }
     }
-  }
 
-  // ── Modal helpers ──
-  function closeModal(id) {
-    document.getElementById(id).classList.add("hidden");
-    // Reset to step 1 when closing
-    if (id === "gameModeModal") showStep("stepMode");
-  }
-
-  function showStep(stepId) {
-    document.getElementById("stepMode").style.display       = stepId === "stepMode"       ? "" : "none";
-    document.getElementById("stepDifficulty").style.display = stepId === "stepDifficulty" ? "" : "none";
-  }
-
-  // ── Open the game mode modal ──
-  function openGameModal() {
-    showStep("stepMode");
-    document.getElementById("gameModeModal").classList.remove("hidden");
-  }
-
-  // ── Clicking the chess card or Quick Play rows all open the same modal ──
-  document.getElementById("chessCard").addEventListener("click", openGameModal);
-  document.getElementById("modeVsCPU").addEventListener("click", openGameModal);
-  document.getElementById("modeLocal").addEventListener("click", openGameModal);
-  document.getElementById("modeOnline").addEventListener("click", openGameModal);
-
-  // ── Step 1: mode selection ──
-  document.getElementById("optVsCPU").addEventListener("click", () => {
-    showStep("stepDifficulty");
-  });
-
-  document.getElementById("optLocal").addEventListener("click", () => {
-    closeModal("gameModeModal");
-    startChess("local", null);
-  });
-
-  document.getElementById("optOnline").addEventListener("click", () => {
-    if (!window._currentUser || !window._currentUser()) {
-      closeModal("gameModeModal");
-      document.getElementById("authGate").classList.remove("hidden");
-    } else {
-      closeModal("gameModeModal");
-      startChess("online", null);
+    // ── Online player count (rooms in rtdb) ──
+    async function loadOnlineCount() {
+      try {
+        const snap = await get(ref(rtdb, "rooms"));
+        const rooms = snap.val() || {};
+        const active = Object.values(rooms).filter(r => r.status === "active").length;
+        const count = active * 2;
+        document.getElementById("chessPlayerCount").textContent = count + " online";
+      } catch { }
     }
-  });
 
-  // ── Step 2: back button ──
-  document.getElementById("backToMode").addEventListener("click", () => {
-    showStep("stepMode");
-  });
+    // ── Dropdown toggle ──
+    const avatarBtn = document.getElementById("avatarBtn");
+    const avatarDropdown = document.getElementById("avatarDropdown");
 
-  // ── Navigate ──
-  function startChess(mode, difficulty) {
-    let url = "../chess/chess.html?mode=" + mode;
-    if (difficulty) url += "&difficulty=" + difficulty;
-    window.location.href = url;
-  }
+    avatarBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      avatarDropdown.classList.toggle("open");
+    });
 
-  // ── Close on overlay click ──
-  document.getElementById("gameModeModal").addEventListener("click", function(e) {
-    if (e.target === this) closeModal("gameModeModal");
-  });
-  document.getElementById("authGate").addEventListener("click", function(e) {
-    if (e.target === this) closeModal("authGate");
-  });
-</script>
+    document.addEventListener("click", () => avatarDropdown.classList.remove("open"));
+
+    // ── Logout ──
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.reload();
+    });
+
+    // ── Expose for inline handlers ──
+    window._currentUser = () => currentUser;
+  </script>
+
+  <!-- Non-module JS for inline handlers -->
+  <script>
+    // Build mini chess board
+    const miniBoard = document.getElementById("miniBoard");
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        const sq = document.createElement("div");
+        sq.className = (r + c) % 2 === 0 ? "light" : "dark";
+        miniBoard.appendChild(sq);
+      }
+    }
+
+    // ── Modal helpers ──
+    function closeModal(id) {
+      document.getElementById(id).classList.add("hidden");
+      // Reset to step 1 when closing
+      if (id === "gameModeModal") showStep("stepMode");
+    }
+
+    function showStep(stepId) {
+      document.getElementById("stepMode").style.display = stepId === "stepMode" ? "" : "none";
+      document.getElementById("stepDifficulty").style.display = stepId === "stepDifficulty" ? "" : "none";
+    }
+
+    // ── Open the game mode modal ──
+    function openGameModal() {
+      showStep("stepMode");
+      document.getElementById("gameModeModal").classList.remove("hidden");
+    }
+
+    // ── Clicking the chess card or Quick Play rows all open the same modal ──
+    document.getElementById("chessCard").addEventListener("click", openGameModal);
+    document.getElementById("modeVsCPU").addEventListener("click", openGameModal);
+    document.getElementById("modeLocal").addEventListener("click", openGameModal);
+    document.getElementById("modeOnline").addEventListener("click", openGameModal);
+
+    // ── Step 1: mode selection ──
+    document.getElementById("optVsCPU").addEventListener("click", () => {
+      showStep("stepDifficulty");
+    });
+
+    document.getElementById("optLocal").addEventListener("click", () => {
+      closeModal("gameModeModal");
+      startChess("local", null);
+    });
+
+    document.getElementById("optOnline").addEventListener("click", () => {
+      if (!window._currentUser || !window._currentUser()) {
+        closeModal("gameModeModal");
+        document.getElementById("authGate").classList.remove("hidden");
+      } else {
+        closeModal("gameModeModal");
+        startChess("online", null);
+      }
+    });
+
+    // ── Step 2: back button ──
+    document.getElementById("backToMode").addEventListener("click", () => {
+      showStep("stepMode");
+    });
+
+    // ── Navigate ──
+    function startChess(mode, difficulty) {
+      let url = "../chess/chess.html?mode=" + mode;
+      if (difficulty) url += "&difficulty=" + difficulty;
+      window.location.href = url;
+    }
+
+    // ── Close on overlay click ──
+    document.getElementById("gameModeModal").addEventListener("click", function (e) {
+      if (e.target === this) closeModal("gameModeModal");
+    });
+    document.getElementById("authGate").addEventListener("click", function (e) {
+      if (e.target === this) closeModal("authGate");
+    });
+
+    // ══ BATTLESHIP ═══════════════════════════════════
+
+    function openBsModal() {
+      bsShowStep("bsStepMode");
+      document.getElementById("bsGameModeModal").classList.remove("hidden");
+    }
+
+    function bsShowStep(stepId) {
+      document.getElementById("bsStepMode").style.display = stepId === "bsStepMode" ? "" : "none";
+      document.getElementById("bsStepDifficulty").style.display = stepId === "bsStepDifficulty" ? "" : "none";
+    }
+
+    // Path mirrors chess: ../chess/chess.html → ../battleship/battleship.html
+    function startBattleship(mode, difficulty) {
+      let url = "../battleship/battleship.html?mode=" + mode;
+      if (difficulty) url += "&difficulty=" + difficulty;
+      window.location.href = url;
+    }
+
+    document.getElementById("battleshipCard").addEventListener("click", openBsModal);
+    document.getElementById("bsModeVsCPU").addEventListener("click", openBsModal);
+    document.getElementById("bsModeLocal").addEventListener("click", openBsModal);
+    document.getElementById("bsModeOnline").addEventListener("click", openBsModal);
+    document.getElementById("bsModeSolo").addEventListener("click", openBsModal);
+
+    document.getElementById("bsOptVsCPU").addEventListener("click", () => bsShowStep("bsStepDifficulty"));
+
+    document.getElementById("bsOptLocal").addEventListener("click", () => {
+      closeModal("bsGameModeModal");
+      startBattleship("local", null);
+    });
+
+    document.getElementById("bsOptOnline").addEventListener("click", () => {
+      if (!window._currentUser || !window._currentUser()) {
+        closeModal("bsGameModeModal");
+        document.getElementById("authGate").classList.remove("hidden");
+      } else {
+        closeModal("bsGameModeModal");
+        startBattleship("online", null);
+      }
+    });
+
+    document.getElementById("bsOptSolo").addEventListener("click", () => {
+      closeModal("bsGameModeModal");
+      startBattleship("solo", null);
+    });
+
+    document.getElementById("bsBackToMode").addEventListener("click", () => bsShowStep("bsStepMode"));
+
+    document.getElementById("bsGameModeModal").addEventListener("click", function (e) {
+      if (e.target === this) closeModal("bsGameModeModal");
+    });
+  </script>
 
 </body>
+
 </html>

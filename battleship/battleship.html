@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battleship — Game Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0d0d0f;
+      --surface: #141418;
+      --surface2: #1a1a20;
+      --surface3: #202028;
+      --border: #26262e;
+      --border2: #32323c;
+      --text: #e8e8ee;
+      --muted: #6a6a7a;
+      --accent: #3b8aff;
+      --accent-dim: #1a5fc4;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --gold: #f5c518;
+      --ocean-light: #0e2a3a;
+      --ocean-dark: #081820;
+      --ship-color: #4a7a9b;
+      --hit-color: #ef4444;
+      --miss-color: #1e3a4a;
+      --sunk-color: #7f1d1d;
+      --cell-empty: #0e2233;
+      --cell-hover: #1a3d55;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ════════ NAV ════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13, 13, 15, .95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 52px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .nav-logo-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 7px var(--accent);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    .nav-game-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: .45rem .9rem;
+      border-radius: 7px;
+      font-family: 'Barlow', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s, transform .1s;
+    }
+
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      opacity: .88;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface2);
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      border: 1px solid #ef444440;
+      color: var(--red);
+    }
+
+    .btn-danger-ghost:hover {
+      background: #ef444412;
+    }
+
+    .btn-sm {
+      padding: .35rem .7rem;
+      font-size: .78rem;
+    }
+
+    /* ════════ LAYOUT ════════ */
+    .game-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr 220px;
+      gap: 0;
+      height: calc(100vh - 52px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 1100px) {
+      .game-layout {
+        grid-template-columns: 1fr 200px;
+      }
+
+      .left-panel {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .game-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow: auto;
+      }
+
+      .right-panel {
+        display: none;
+      }
+    }
+
+    /* ════════ PANELS ════════ */
+    .left-panel,
+    .right-panel {
+      background: var(--surface);
+      border-color: var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 1rem .75rem;
+      gap: .6rem;
+    }
+
+    .left-panel {
+      border-right: 1px solid var(--border);
+    }
+
+    .right-panel {
+      border-left: 1px solid var(--border);
+    }
+
+    .panel-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: .3rem .25rem .15rem;
+    }
+
+    .panel-divider {
+      height: 1px;
+      background: var(--border);
+      margin: .1rem 0;
+    }
+
+    /* ════════ SHIP LIST ════════ */
+    .ship-list {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+
+    .ship-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .5rem .7rem;
+      cursor: pointer;
+      transition: border-color .15s;
+      user-select: none;
+    }
+
+    .ship-item.selected {
+      border-color: var(--accent);
+      background: #1a2535;
+    }
+
+    .ship-item.placed {
+      border-color: var(--green)44;
+      background: #0d1f15;
+    }
+
+    .ship-item.sunk-ship {
+      border-color: var(--red)44;
+      opacity: .5;
+    }
+
+    .ship-icon-row {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .ship-cell-icon {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--ship-color);
+    }
+
+    .ship-cell-icon.hit-icon {
+      background: var(--hit-color);
+    }
+
+    .ship-cell-icon.sunk-icon {
+      background: var(--sunk-color);
+    }
+
+    .ship-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      flex: 1;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .ship-size {
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    /* ════════ CENTER ════════ */
+    .center-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: .75rem 1rem;
+      gap: .6rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ════════ PLAYER STRIPS ════════ */
+    .player-strip {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+    }
+
+    .player-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .player-name-label {
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    .player-sub-label {
+      font-size: .72rem;
+      color: var(--muted);
+    }
+
+    .shot-counter {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    /* ════════ BOARD AREA ════════ */
+    .boards-area {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .board-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .board-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .grid-outer {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .grid-row-labels {
+      display: flex;
+      flex-direction: column;
+      margin-right: 2px;
+    }
+
+    .grid-col-labels {
+      display: flex;
+      margin-left: 18px;
+      margin-bottom: 2px;
+    }
+
+    .axis-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .58rem;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ════════ GRID ════════ */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      overflow: hidden;
+      gap: 1px;
+      background: var(--border);
+      box-shadow: 0 4px 24px #0007, inset 0 0 0 1px var(--border2);
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: var(--cell-empty);
+      cursor: pointer;
+      position: relative;
+      transition: background .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* My board cells */
+    .cell.ship-cell {
+      background: var(--ship-color);
+    }
+
+    .cell.hit-cell {
+      background: var(--hit-color);
+    }
+
+    .cell.miss-cell {
+      background: var(--miss-color);
+    }
+
+    .cell.sunk-cell {
+      background: var(--sunk-color);
+    }
+
+    /* Enemy board cells */
+    .cell.can-shoot:hover {
+      background: var(--cell-hover);
+      cursor: crosshair;
+    }
+
+    .cell.can-shoot.hot-cell {
+      background: #1a2e40;
+    }
+
+    /* Placement helpers */
+    .cell.placing-valid {
+      background: #0d3320;
+    }
+
+    .cell.placing-invalid {
+      background: #3a0d0d;
+    }
+
+    /* Hit/miss markers */
+    .cell::after {
+      content: '';
+      position: absolute;
+      inset: 20%;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .cell.hit-cell::after {
+      background: #fff8;
+    }
+
+    .cell.miss-cell::after {
+      background: #ffffff18;
+      border: 1px solid #ffffff22;
+    }
+
+    .cell.sunk-cell::after {
+      background: #fff3;
+    }
+
+    /* Explosion animation */
+    @keyframes explode {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+
+      60% {
+        transform: scale(1.4);
+        opacity: .8;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .cell.just-hit {
+      animation: explode .3s cubic-bezier(.2, .8, .3, 1) forwards;
+    }
+
+    /* Ripple miss animation */
+    @keyframes ripple {
+      from {
+        transform: scale(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    .cell.just-miss::before {
+      content: '';
+      position: absolute;
+      inset: 20%;
+      border-radius: 50%;
+      border: 2px solid #4ab;
+      animation: ripple .5s ease-out forwards;
+      pointer-events: none;
+    }
+
+    /* ════════ STATUS CARD ════════ */
+    .status-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .6rem .9rem;
+      text-align: center;
+      min-width: 180px;
+    }
+
+    .status-turn {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .2rem;
+    }
+
+    .status-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .status-sub {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .15rem;
+    }
+
+    /* ════════ THINKING ════════ */
+    .thinking-indicator {
+      display: none;
+      align-items: center;
+      gap: .5rem;
+      padding: .45rem .7rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .thinking-indicator.show {
+      display: flex;
+    }
+
+    .thinking-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: thinkPulse .7s ease-in-out infinite;
+    }
+
+    .thinking-dot:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .thinking-dot:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes thinkPulse {
+
+      0%,
+      100% {
+        opacity: .3;
+        transform: scale(.8);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+
+    /* ════════ PLACEMENT CONTROLS ════════ */
+    .placement-controls {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .75rem;
+    }
+
+    .placement-controls h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text);
+      margin-bottom: .2rem;
+    }
+
+    .placement-controls p {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .placement-btns {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    /* ════════ GAME OVER OVERLAY ════════ */
+    .game-over-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      background: rgba(0, 0, 0, .82);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn .3s ease;
+      border-radius: 3px;
+    }
+
+    .game-over-overlay.show {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .game-over-card {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      animation: rise .3s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .game-over-icon {
+      font-size: 2.4rem;
+      margin-bottom: .75rem;
+    }
+
+    .game-over-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+
+    .game-over-sub {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .game-over-btns {
+      display: flex;
+      gap: .6rem;
+      justify-content: center;
+    }
+
+    .game-over-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .4rem;
+      margin: .75rem 0 1rem;
+    }
+
+    .go-stat {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: .45rem .6rem;
+    }
+
+    .go-stat-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .go-stat-label {
+      font-size: .65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* ════════ PASS & PLAY OVERLAY ════════ */
+    .pass-play-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, .9);
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+    }
+
+    .pass-play-overlay.show {
+      display: flex;
+    }
+
+    .pass-play-card {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+    }
+
+    /* ════════ RIGHT PANEL ════════ */
+    .mode-badge {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .5rem .7rem;
+    }
+
+    .mode-badge-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .mode-badge-label {
+      font-size: .68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: .1em;
+      line-height: 1.2;
+    }
+
+    .mode-badge-val {
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    /* Shot log */
+    .shot-log {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      flex: 1;
+      min-height: 80px;
+      max-height: 220px;
+    }
+
+    .shot-log-inner {
+      overflow-y: auto;
+      height: 100%;
+      max-height: 220px;
+    }
+
+    .shot-log-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .35rem .6rem;
+      border-bottom: 1px solid var(--border);
+      font-size: .8rem;
+    }
+
+    .shot-log-row:last-child {
+      border-bottom: none;
+    }
+
+    .shot-result-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: .1rem .4rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .badge-hit {
+      background: var(--red)22;
+      color: var(--red);
+    }
+
+    .badge-miss {
+      background: #ffffff10;
+      color: var(--muted);
+    }
+
+    .badge-sunk {
+      background: var(--gold)22;
+      color: var(--gold);
+    }
+
+    .controls-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    /* Online panels */
+    .room-code-display {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .6rem .8rem;
+      display: none;
+    }
+
+    .room-code-display.show {
+      display: block;
+    }
+
+    .room-code-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .25rem;
+    }
+
+    .room-code-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: .2em;
+      color: var(--accent);
+    }
+
+    .room-code-copy {
+      font-size: .75rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: color .15s;
+      margin-top: .2rem;
+      display: inline-block;
+    }
+
+    .room-code-copy:hover {
+      color: var(--accent);
+    }
+
+    .waiting-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .waiting-screen.show {
+      display: flex;
+    }
+
+    .waiting-spinner {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid var(--border2);
+      border-top-color: var(--accent);
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .waiting-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .waiting-sub {
+      font-size: .85rem;
+      color: var(--muted);
+    }
+
+    .waiting-code {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: .25em;
+      color: var(--accent);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: .5rem 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Draw offer */
+    .draw-offer-banner {
+      display: none;
+      background: var(--amber)15;
+      border: 1px solid var(--amber)44;
+      border-radius: 8px;
+      padding: .65rem .75rem;
+      font-size: .85rem;
+    }
+
+    .draw-offer-banner.show {
+      display: block;
+    }
+
+    .draw-offer-banner-title {
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: .4rem;
+      font-size: .88rem;
+    }
+
+    /* Online dot */
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .online-dot.offline {
+      background: var(--red);
+      box-shadow: 0 0 6px var(--red);
+      animation: none;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 500;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: .6rem 1.2rem;
+      font-size: .88rem;
+      font-weight: 600;
+      box-shadow: 0 8px 32px #0008;
+      transition: transform .3s cubic-bezier(.16, 1, .3, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-left">
+      <a href="../dashboard/index.html" class="nav-logo">
+        <span class="nav-logo-dot"></span>
+        Game Arena
+      </a>
+      <div class="nav-divider"></div>
+      <span class="nav-game-label">🚢 Battleship</span>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-ghost btn-sm" id="navRandomBtn" title="Random placement">🎲 Random</button>
+      <button class="btn btn-ghost btn-sm" id="navRotateBtn" title="Rotate ship (R)">↻ Rotate</button>
+      <button class="btn btn-danger-ghost btn-sm" id="navResignBtn">Resign</button>
+      <a href="../dashboard/index.html"><button class="btn btn-ghost btn-sm">✕ Exit</button></a>
+    </div>
+  </nav>
+
+  <!-- ══ LAYOUT ══════════════════════════════════ -->
+  <div class="game-layout">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="panel-label">Fleet</div>
+      <div class="ship-list" id="shipList">
+        <!-- Populated by JS -->
+      </div>
+      <div class="panel-divider"></div>
+      <div class="panel-label">Move History</div>
+      <div class="shot-log" id="shotLogLeft">
+        <div class="shot-log-inner" id="shotLogLeftInner">
+          <div style="padding:.7rem;text-align:center;color:var(--muted);font-size:.78rem;">No shots fired yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER PANEL -->
+    <div class="center-panel">
+
+      <!-- Waiting screen (online) -->
+      <div class="waiting-screen" id="waitingScreen">
+        <div class="waiting-spinner"></div>
+        <div class="waiting-title">Waiting for opponent…</div>
+        <div class="waiting-sub">Share this room code:</div>
+        <div class="waiting-code" id="waitingRoomCode" title="Click to copy">------</div>
+        <div style="font-size:.78rem;color:var(--muted);">Click the code to copy it</div>
+        <button class="btn btn-ghost btn-sm" id="cancelWaitBtn">Cancel</button>
+      </div>
+
+      <!-- Pass & Play hidden board overlay -->
+      <div class="pass-play-overlay" id="passPlayOverlay">
+        <div class="pass-play-card">
+          <div style="font-size:2rem;margin-bottom:.6rem;">🙈</div>
+          <div
+            style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;text-transform:uppercase;margin-bottom:.4rem;"
+            id="passPlayTitle">Hand the device</div>
+          <div style="font-size:.85rem;color:var(--muted);margin-bottom:1.1rem;" id="passPlaySub">Pass to the next
+            player. Don't peek!</div>
+          <button class="btn btn-primary" id="passPlayConfirmBtn">I'm ready</button>
+        </div>
+      </div>
+
+      <!-- Main game area -->
+      <div id="gameArea" style="display:flex;flex-direction:column;align-items:center;gap:.5rem;width:100%;">
+
+        <!-- Top player (opponent) -->
+        <div class="player-strip" id="topPlayerStrip">
+          <div class="player-avatar" id="topAvatar" style="background:#3b8aff;">?</div>
+          <div>
+            <div class="player-name-label" id="topPlayerName">Opponent</div>
+            <div class="player-sub-label" id="topPlayerSub"></div>
+          </div>
+          <div class="shot-counter" id="topShotCount">0 shots</div>
+        </div>
+
+        <!-- Boards -->
+        <div class="boards-area" id="boardsArea">
+
+          <!-- Enemy board (player fires here) -->
+          <div class="board-wrap" id="enemyBoardWrap">
+            <div class="board-label" id="enemyBoardLabel">Enemy Waters</div>
+            <div>
+              <div class="grid-col-labels" id="enemyColLabels"></div>
+              <div class="grid-outer">
+                <div class="grid-row-labels" id="enemyRowLabels"></div>
+                <div class="grid" id="enemyGrid"
+                  style="width:clamp(180px,min(calc(50vw - 120px),280px),280px);height:clamp(180px,min(calc(50vw - 120px),280px),280px);">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- My board (ships are here) -->
+          <div class="board-wrap" id="myBoardWrap">
+            <div class="board-label" id="myBoardLabel">Your Fleet</div>
+            <div>
+              <div class="grid-col-labels" id="myColLabels"></div>
+              <div class="grid-outer">
+                <div class="grid-row-labels" id="myRowLabels"></div>
+                <div class="grid" id="myGrid"
+                  style="width:clamp(180px,min(calc(50vw - 120px),280px),280px);height:clamp(180px,min(calc(50vw - 120px),280px),280px);">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status strip -->
+        <div style="display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;justify-content:center;">
+          <div class="thinking-indicator" id="thinkingIndicator">
+            <div class="thinking-dot"></div>
+            <div class="thinking-dot"></div>
+            <div class="thinking-dot"></div>
+            <span id="thinkingText">CPU is targeting…</span>
+          </div>
+          <div class="status-card">
+            <div class="status-turn" id="statusTurn">PHASE</div>
+            <div class="status-label" id="statusLabel">Place your ships</div>
+            <div class="status-sub" id="statusSub">Select a ship to begin</div>
+          </div>
+        </div>
+
+        <!-- Placement controls -->
+        <div class="placement-controls" id="placementControls">
+          <h3>Ship Placement</h3>
+          <p>Select a ship from the list, then click to place it. Press R to rotate.</p>
+          <div class="placement-btns">
+            <button class="btn btn-ghost btn-sm" id="rotateBtn">↻ Rotate (R)</button>
+            <button class="btn btn-ghost btn-sm" id="randomPlaceBtn">🎲 Random</button>
+            <button class="btn btn-ghost btn-sm" id="clearBtn">✕ Clear All</button>
+            <button class="btn btn-primary btn-sm" id="startGameBtn" disabled>▶ Start Battle</button>
+          </div>
+        </div>
+
+        <!-- Bottom player (you) -->
+        <div class="player-strip" id="bottomPlayerStrip">
+          <div class="player-avatar" id="bottomAvatar" style="background:#22c55e;">?</div>
+          <div>
+            <div class="player-name-label" id="bottomPlayerName">You</div>
+            <div class="player-sub-label" id="bottomPlayerSub"></div>
+          </div>
+          <div class="shot-counter" id="bottomShotCount">0 shots</div>
+        </div>
+
+      </div>
+
+      <!-- Game over overlay -->
+      <div class="game-over-overlay" id="gameOverOverlay">
+        <div class="game-over-card">
+          <div class="game-over-icon" id="gameOverIcon">🏆</div>
+          <div class="game-over-title" id="gameOverTitle">You Win!</div>
+          <div class="game-over-sub" id="gameOverSub">Congratulations!</div>
+          <div class="game-over-stats" id="gameOverStats"></div>
+          <div class="game-over-btns">
+            <button class="btn btn-primary" id="gameOverNewBtn">New Game</button>
+            <button class="btn btn-ghost" id="gameOverReviewBtn">Review</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="mode-badge" id="modeBadge">
+        <div class="mode-badge-icon" id="modeBadgeIcon">🤖</div>
+        <div>
+          <div class="mode-badge-label" id="modeBadgeLabel">Mode</div>
+          <div class="mode-badge-val" id="modeBadgeVal">—</div>
+        </div>
+      </div>
+
+      <div class="room-code-display" id="roomCodeDisplay">
+        <div class="room-code-label">Room Code</div>
+        <div class="room-code-val" id="roomCodeVal">------</div>
+        <div class="room-code-copy" id="roomCodeCopy">📋 Copy link to share</div>
+      </div>
+
+      <div class="draw-offer-banner" id="drawOfferBanner">
+        <div class="draw-offer-banner-title">🤝 Draw Offered</div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:.6rem;" id="drawOfferText">Your opponent offers a
+          draw.</div>
+        <div style="display:flex;gap:.4rem;">
+          <button class="btn btn-ghost btn-sm" style="flex:1;" id="acceptDrawBtn">Accept</button>
+          <button class="btn btn-danger-ghost btn-sm" style="flex:1;" id="declineDrawBtn">Decline</button>
+        </div>
+      </div>
+
+      <div class="status-card" style="text-align:left;">
+        <div class="status-turn" id="rpStatusTurn">STATUS</div>
+        <div class="status-label" id="rpStatusLabel" style="font-size:.95rem;">Ready</div>
+        <div class="status-sub" id="rpStatusSub"></div>
+      </div>
+
+      <div class="controls-group">
+        <button class="btn btn-ghost btn-sm" id="resignBtn" style="width:100%;">⚑ Resign</button>
+        <button class="btn btn-ghost btn-sm" id="offerDrawBtn" style="width:100%;">🤝 Offer Draw</button>
+      </div>
+
+      <div class="panel-divider"></div>
+
+      <div class="panel-label">Shot Log</div>
+      <div class="shot-log" id="shotLogRight" style="flex:1;">
+        <div class="shot-log-inner" id="shotLogRightInner">
+          <div style="padding:.65rem;text-align:center;color:var(--muted);font-size:.78rem;">No shots fired yet.</div>
+        </div>
+      </div>
+
+      <div id="onlinePlayersPanel" style="display:none;">
+        <div class="panel-divider"></div>
+        <div style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--muted);">
+          <span class="online-dot" id="opponentOnlineDot"></span>
+          <span id="opponentStatusText">Waiting…</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:.4rem;margin-top:auto;">
+        <a href="../dashboard/profile.html" style="flex:1;"><button class="btn btn-ghost btn-sm" style="width:100%;">👤
+            Profile</button></a>
+        <a href="../dashboard/leaderboard.html" style="flex:1;"><button class="btn btn-ghost btn-sm"
+            style="width:100%;">🏆 Board</button></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TOAST ══════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ══ SCRIPTS ════════════════════════════════ -->
+  <script src="battleship-engine.js"></script>
+  <script src="battleship-ai-rookie.js"></script>
+  <script src="battleship-ai-beginner.js"></script>
+  <script src="battleship-ai-amateur.js"></script>
+  <script src="battleship-ai-pro.js"></script>
+  <script src="battleship-ai-grandmaster.js"></script>
+
+  <script type="module">
+
+    // ── URL params ─────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const MODE = params.get("mode") || "cpu";
+    const DIFFICULTY = params.get("difficulty") || "beginner";
+    const ROOM_CODE = params.get("room") || null;
+
+    // ── AI map ─────────────────────────────────
+    const AI_MAP = {
+      rookie: () => window.BattleshipAI_Rookie,
+      beginner: () => window.BattleshipAI_Beginner,
+      amateur: () => window.BattleshipAI_Amateur,
+      pro: () => window.BattleshipAI_Pro,
+      grandmaster: () => window.BattleshipAI_Grandmaster,
+    };
+
+    const DIFF_LABELS = { rookie: "Rookie", beginner: "Beginner", amateur: "Amateur", pro: "Pro", grandmaster: "Grandmaster" };
+    const DIFF_EMOJIS = { rookie: "🎲", beginner: "🟢", amateur: "🔵", pro: "🟡", grandmaster: "🔴" };
+
+    const {
+      GRID_SIZE, SHIPS, CELL, ORIENTATION,
+      createGrid, randomPlacement, placeShip, canPlace, getShipCells,
+      shoot, isPlacementComplete, getRemainingShips, serializeTracker, deserializeTracker,
+    } = window.BattleshipEngineInternals;
+
+    // ── State ───────────────────────────────────
+    let currentUser = null;
+    let userProfile = null;
+    let myColor = "player1";  // "player1" | "player2" in local/online
+    let gamePhase = "placement"; // "placement" | "battle" | "gameover"
+    let boardLocked = false;
+    let myTurn = true;       // is it my turn to shoot?
+
+    // Placement state
+    let selectedShipIdx = null;     // index into SHIPS
+    let orientation = ORIENTATION.HORIZONTAL;
+    let hoverCell = null;
+
+    // Game boards (my ships, enemy ships)
+    let myGrid = createGrid();   // my ships grid
+    let myTracker = [];             // my ships tracker
+    let myShotGrid = createGrid();  // shots I've taken against enemy
+
+    let enemyGrid = createGrid();  // enemy's actual ships (for CPU/local validation)
+    let enemyTracker = [];
+    let enemyShotGrid = createGrid(); // shots enemy has taken at me
+
+    // Shot log
+    let shotLog = [];               // { turn, coord, result, ship }
+
+    // Online
+    let roomCode = null;
+    let unsubRoom = null;
+
+    // Pass & play
+    let p1Ready = false;
+    let p2Ready = false;
+    let passPlayPhase = "p1-placement"; // p1-placement | p2-placement | p1-turn | p2-turn
+
+    // Local player names
+    let p1Name = "Player 1";
+    let p2Name = "Player 2";
+
+    // ── Init Firebase (background) ──────────────
+    async function initFirebase() {
+      try {
+        const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+        const { getAuth, onAuthStateChanged: _oac } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
+        const { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp: fsTimestamp }
+          = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const { getDatabase, ref, set, get, update, remove, push, onValue, onDisconnect, off, serverTimestamp }
+          = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js");
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyD37HMOW2F3bNIlN8A2uZKz3Jha6PTpdRM",
+          authDomain: "game-arena-30870.firebaseapp.com",
+          databaseURL: "https://game-arena-30870-default-rtdb.firebaseio.com",
+          projectId: "game-arena-30870",
+          storageBucket: "game-arena-30870.firebasestorage.app",
+          messagingSenderId: "229549562058",
+          appId: "1:229549562058:web:a1c6106644379c2d2187c33",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const rtdb = getDatabase(app);
+
+        window._fbReady = {
+          ref, set, get, update, remove, push, onValue, onDisconnect, off, serverTimestamp,
+          doc, getDoc, updateDoc, setDoc, fsTimestamp
+        };
+        window._fbDb = db;
+        window._fbRtdb = rtdb;
+
+        _oac(auth, async (user) => {
+          currentUser = user;
+          if (user) {
+            try {
+              const snap = await getDoc(doc(db, "users", user.uid));
+              if (snap.exists()) { userProfile = snap.data(); updatePlayerStrips(); }
+            } catch { }
+          }
+          if (MODE === "online") initOnlineMode();
+        });
+      } catch (e) { console.warn("Firebase not available:", e); }
+    }
+
+    if (MODE !== "online") { initGame(); }
+    initFirebase();
+
+    // ── Build grids ─────────────────────────────
+    function buildGrid(containerId, isEnemy) {
+      const el = document.getElementById(containerId);
+      el.innerHTML = "";
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+
+          if (isEnemy) {
+            cell.addEventListener("click", () => onEnemyCellClick(r, c));
+            cell.addEventListener("mouseenter", () => onEnemyCellHover(r, c));
+            cell.addEventListener("mouseleave", () => onEnemyCellLeave());
+          } else {
+            cell.addEventListener("click", () => onMyCellClick(r, c));
+            cell.addEventListener("mouseenter", () => onMyCellHover(r, c));
+            cell.addEventListener("mouseleave", () => onMyCellLeave());
+          }
+
+          el.appendChild(cell);
+        }
+      }
+    }
+
+    function buildAxisLabels() {
+      const cols = "ABCDEFGHIJ";
+      ["myColLabels", "enemyColLabels"].forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = "";
+        const gridEl = document.getElementById(id === "myColLabels" ? "myGrid" : "enemyGrid");
+        const sqSize = gridEl.offsetWidth / GRID_SIZE;
+        for (let c = 0; c < GRID_SIZE; c++) {
+          const lbl = document.createElement("div");
+          lbl.className = "axis-label";
+          lbl.textContent = cols[c];
+          lbl.style.width = sqSize + "px";
+          lbl.style.height = "14px";
+          el.appendChild(lbl);
+        }
+      });
+
+      ["myRowLabels", "enemyRowLabels"].forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = "";
+        const gridEl = document.getElementById(id === "myRowLabels" ? "myGrid" : "enemyGrid");
+        const sqSize = gridEl.offsetWidth / GRID_SIZE;
+        for (let r = 0; r < GRID_SIZE; r++) {
+          const lbl = document.createElement("div");
+          lbl.className = "axis-label";
+          lbl.textContent = r + 1;
+          lbl.style.height = sqSize + "px";
+          lbl.style.width = "16px";
+          el.appendChild(lbl);
+        }
+      });
+    }
+
+    // ── Render grids ─────────────────────────────
+    function renderMyGrid() {
+      const cells = document.getElementById("myGrid").querySelectorAll(".cell");
+      cells.forEach(cell => {
+        const r = parseInt(cell.dataset.r);
+        const c = parseInt(cell.dataset.c);
+        cell.className = "cell";
+
+        // Draw ship cells
+        if (myGrid[r][c] === CELL.SHIP) cell.classList.add("ship-cell");
+
+        // Draw incoming shots
+        if (enemyShotGrid[r][c] === CELL.HIT) cell.classList.add("hit-cell");
+        if (enemyShotGrid[r][c] === CELL.MISS) cell.classList.add("miss-cell");
+        if (enemyShotGrid[r][c] === CELL.SUNK) cell.classList.add("sunk-cell");
+
+        // Placement hover preview
+        if (gamePhase === "placement" && selectedShipIdx !== null && hoverCell) {
+          const ship = SHIPS[selectedShipIdx];
+          const cells_preview = getShipCells(hoverCell.r, hoverCell.c, ship.size, orientation);
+          if (cells_preview && cells_preview.some(p => p.r === r && p.c === c)) {
+            const valid = canPlace(myGrid, hoverCell.r, hoverCell.c, ship.size, orientation);
+            cell.classList.add(valid ? "placing-valid" : "placing-invalid");
+          }
+        }
+      });
+    }
+
+    function renderEnemyGrid() {
+      const cells = document.getElementById("enemyGrid").querySelectorAll(".cell");
+      cells.forEach(cell => {
+        const r = parseInt(cell.dataset.r);
+        const c = parseInt(cell.dataset.c);
+        cell.className = "cell";
+
+        // Show what I've shot
+        if (myShotGrid[r][c] === CELL.HIT) cell.classList.add("hit-cell");
+        if (myShotGrid[r][c] === CELL.MISS) cell.classList.add("miss-cell");
+        if (myShotGrid[r][c] === CELL.SUNK) cell.classList.add("sunk-cell");
+
+        // Show enemy ships on game over (review)
+        if (gamePhase === "gameover" && enemyGrid[r][c] === CELL.SHIP &&
+          myShotGrid[r][c] === CELL.EMPTY) {
+          cell.style.opacity = "0.4";
+          cell.classList.add("ship-cell");
+        } else {
+          cell.style.opacity = "";
+        }
+
+        if (gamePhase === "battle" && myTurn && myShotGrid[r][c] === CELL.EMPTY) {
+          cell.classList.add("can-shoot");
+        }
+      });
+    }
+
+    // ── Ship list sidebar ──────────────────────
+    function renderShipList() {
+      const list = document.getElementById("shipList");
+      list.innerHTML = "";
+
+      SHIPS.forEach((ship, idx) => {
+        const placed = myTracker.find(t => t.id === ship.id);
+        const item = document.createElement("div");
+        item.className = "ship-item" +
+          (placed ? " placed" : "") +
+          (selectedShipIdx === idx ? " selected" : "") +
+          (placed?.sunk ? " sunk-ship" : "");
+        item.dataset.idx = idx;
+
+        const icons = Array.from({ length: ship.size }, (_, i) => {
+          let cls = "ship-cell-icon";
+          if (placed) {
+            if (placed.sunk) cls += " sunk-icon";
+            else if (placed.hits.size > i) cls += " hit-icon";
+          }
+          return `<div class="${cls}"></div>`;
+        }).join("");
+
+        item.innerHTML = `
+        <div class="ship-icon-row">${icons}</div>
+        <span class="ship-name">${ship.name}</span>
+        <span class="ship-size">${ship.size}</span>
+      `;
+
+        if (gamePhase === "placement" && !placed) {
+          item.addEventListener("click", () => selectShip(idx));
+        }
+
+        list.appendChild(item);
+      });
+    }
+
+    // ── Enemy ship list (what opponent has left) ──
+    function renderEnemyShipList() {
+      // Reuse the ship list but in battle mode show enemy status via panel
+      // This is shown in the right panel "Opponent's Fleet" — update dynamically
+      const sunkCount = enemyTracker.filter(s => s.sunk).length;
+      document.getElementById("rpStatusSub").textContent =
+        `Enemy: ${sunkCount}/${SHIPS.length} ships sunk`;
+    }
+
+    // ── Placement handlers ──────────────────────
+    function selectShip(idx) {
+      if (myTracker.find(t => t.id === SHIPS[idx].id)) return;
+      selectedShipIdx = idx;
+      renderShipList();
+      renderMyGrid();
+      updateStatus();
+    }
+
+    function onMyCellClick(r, c) {
+      if (gamePhase !== "placement" || selectedShipIdx === null || boardLocked) return;
+      const ship = SHIPS[selectedShipIdx];
+      const result = placeShip(myGrid, myTracker, ship, r, c, orientation);
+      if (!result) { showToast("Can't place there!"); return; }
+      myGrid = result.grid;
+      myTracker = result.tracker;
+
+      // Auto-advance to next unplaced ship
+      const nextIdx = SHIPS.findIndex((s, i) => !myTracker.find(t => t.id === s.id));
+      selectedShipIdx = nextIdx === -1 ? null : nextIdx;
+
+      renderMyGrid();
+      renderShipList();
+      updatePlacementBtn();
+      updateStatus();
+    }
+
+    function onMyCellHover(r, c) {
+      if (gamePhase !== "placement" || selectedShipIdx === null) return;
+      hoverCell = { r, c };
+      renderMyGrid();
+    }
+
+    function onMyCellLeave() {
+      hoverCell = null;
+      renderMyGrid();
+    }
+
+    function updatePlacementBtn() {
+      const complete = isPlacementComplete(myTracker);
+      document.getElementById("startGameBtn").disabled = !complete;
+    }
+
+    // ── Shooting handlers ───────────────────────
+    function onEnemyCellClick(r, c) {
+      if (gamePhase !== "battle" || !myTurn || boardLocked) return;
+      if (myShotGrid[r][c] !== CELL.EMPTY) { showToast("Already shot there!"); return; }
+      fireShot(r, c);
+    }
+
+    function onEnemyCellHover(r, c) { }
+    function onEnemyCellLeave() { }
+
+    function fireShot(r, c) {
+      boardLocked = true;
+
+      const remaining = getRemainingShips(enemyTracker);
+      const result = shoot(enemyGrid, enemyTracker, myShotGrid, r, c);
+
+      myShotGrid = result.shotGrid;
+      enemyTracker = result.tracker;
+
+      addShotLog("You", r, c, result.result, result.sunkShip);
+      animateShot("enemyGrid", r, c, result.result);
+
+      updateShotCount();
+      renderEnemyGrid();
+      renderShipList(); // enemy sinks update own list in local/pass&play
+      renderEnemyShipList();
+      updateStatus();
+
+      if (result.gameOver) {
+        setTimeout(() => endGame("player"), 600);
+        return;
+      }
+
+      if (result.result === "hit" || result.result === "sunk") {
+        // Player gets another shot on hit? No — standard rules: take turns
+        // (Some variants allow re-shoot on hit — use standard for now)
+      }
+
+      if (MODE === "online") {
+        sendShotOnline(r, c, result.result, myShotGrid);
+        boardLocked = false;
+      } else if (MODE === "cpu") {
+        myTurn = false;
+        updateStatus();
+        scheduleCpuShot();
+      } else if (MODE === "local") {
+        myTurn = false;
+        updateStatus();
+      } else if (MODE === "solo") {
+        boardLocked = false;
+        updateStatus();
+      }
+    }
+
+    // ── CPU Shot ────────────────────────────────
+    function scheduleCpuShot() {
+      document.getElementById("thinkingIndicator").classList.add("show");
+      const delay = DIFFICULTY === "grandmaster" ? 500 : DIFFICULTY === "pro" ? 400 : 600;
+
+      setTimeout(() => {
+        const ai = AI_MAP[DIFFICULTY]?.();
+        if (!ai || gamePhase !== "battle") {
+          document.getElementById("thinkingIndicator").classList.remove("show");
+          boardLocked = false;
+          return;
+        }
+
+        const remaining = getRemainingShips(myTracker);
+        const shot = ai.getShot(enemyShotGrid, remaining);
+
+        document.getElementById("thinkingIndicator").classList.remove("show");
+
+        if (!shot) { boardLocked = false; return; }
+
+        const result = shoot(myGrid, myTracker, enemyShotGrid, shot.r, shot.c);
+        enemyShotGrid = result.shotGrid;
+        myTracker = result.tracker;
+
+        addShotLog("CPU", shot.r, shot.c, result.result, result.sunkShip);
+        animateShot("myGrid", shot.r, shot.c, result.result);
+
+        updateShotCount();
+        renderMyGrid();
+        renderShipList();
+        updateStatus();
+
+        if (result.gameOver) {
+          setTimeout(() => endGame("cpu"), 600);
+          return;
+        }
+
+        myTurn = true;
+        boardLocked = false;
+        renderEnemyGrid();
+        updateStatus();
+      }, delay);
+    }
+
+    // ── Animate shot ─────────────────────────────
+    function animateShot(gridId, r, c, result) {
+      const cells = document.getElementById(gridId).querySelectorAll(".cell");
+      const cell = [...cells].find(el => parseInt(el.dataset.r) === r && parseInt(el.dataset.c) === c);
+      if (!cell) return;
+
+      const cls = (result === "miss") ? "just-miss" : "just-hit";
+      cell.classList.add(cls);
+      setTimeout(() => cell.classList.remove(cls), 500);
+    }
+
+    // ── Shot log ─────────────────────────────────
+    function addShotLog(by, r, c, result, sunkShip) {
+      const cols = "ABCDEFGHIJ";
+      const coord = `${cols[c]}${r + 1}`;
+      const entry = { by, coord, result, shipName: sunkShip?.name || null };
+      shotLog.unshift(entry); // newest first
+      renderShotLog();
+    }
+
+    function renderShotLog() {
+      const html = shotLog.slice(0, 40).map(e => {
+        let cls, label;
+        if (e.result === "sunk") { cls = "badge-sunk"; label = e.shipName ? `SUNK ${e.shipName.toUpperCase()}` : "SUNK"; }
+        else if (e.result === "hit") { cls = "badge-hit"; label = "HIT"; }
+        else { cls = "badge-miss"; label = "MISS"; }
+        return `<div class="shot-log-row">
+        <span class="shot-result-badge ${cls}">${label}</span>
+        <span style="color:var(--muted);font-size:.78rem;">${e.by}</span>
+        <span style="margin-left:auto;font-family:'Barlow Condensed',sans-serif;font-weight:700;">${e.coord}</span>
+      </div>`;
+      }).join("");
+
+      ["shotLogLeftInner", "shotLogRightInner"].forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = html || '<div style="padding:.7rem;text-align:center;color:var(--muted);font-size:.78rem;">No shots yet.</div>';
+      });
+    }
+
+    // ── Shot count display ────────────────────────
+    function updateShotCount() {
+      const myFired = shotLog.filter(e => e.by === "You" || e.by === p1Name || e.by === "Player 1").length;
+      const cpuFired = shotLog.filter(e => e.by !== "You" && e.by !== p1Name && e.by !== "Player 1").length;
+      document.getElementById("topShotCount").textContent = `${cpuFired} shots`;
+      document.getElementById("bottomShotCount").textContent = `${myFired} shots`;
+    }
+
+    // ── Status updates ────────────────────────────
+    function updateStatus() {
+      const turnEl = document.getElementById("statusTurn");
+      const labelEl = document.getElementById("statusLabel");
+      const subEl = document.getElementById("statusSub");
+
+      const rtTurn = document.getElementById("rpStatusTurn");
+      const rtLabel = document.getElementById("rpStatusLabel");
+      const rtSub = document.getElementById("rpStatusSub");
+
+      if (gamePhase === "placement") {
+        const placed = myTracker.length;
+        turnEl.textContent = "PHASE 1 — PLACEMENT";
+        labelEl.textContent = selectedShipIdx !== null
+          ? `Placing ${SHIPS[selectedShipIdx].name}`
+          : isPlacementComplete(myTracker) ? "All ships placed!" : "Select a ship";
+        labelEl.style.color = "";
+        subEl.textContent = `${placed} / ${SHIPS.length} ships placed`;
+
+        rtTurn.textContent = "PLACEMENT";
+        rtLabel.textContent = `${placed}/${SHIPS.length} placed`;
+        rtSub.textContent = isPlacementComplete(myTracker) ? "Ready to battle!" : "Place all ships";
+      } else if (gamePhase === "battle") {
+        if (myTurn) {
+          turnEl.textContent = "YOUR TURN";
+          labelEl.textContent = "Fire!";
+          labelEl.style.color = "var(--green)";
+          subEl.textContent = "Click the enemy grid to shoot";
+          rtTurn.textContent = "BATTLE";
+          rtLabel.textContent = "Your Turn";
+        } else {
+          turnEl.textContent = "OPPONENT'S TURN";
+          labelEl.textContent = MODE === "cpu" ? "CPU Targeting…" : "Waiting…";
+          labelEl.style.color = "var(--amber)";
+          subEl.textContent = "";
+          rtTurn.textContent = "BATTLE";
+          rtLabel.textContent = "Opponent's Turn";
+        }
+      }
+    }
+
+    // ── Game start ───────────────────────────────
+    function startBattle() {
+      if (!isPlacementComplete(myTracker)) return;
+
+      gamePhase = "battle";
+      myTurn = true;
+
+      // Setup enemy placement
+      if (MODE === "cpu") {
+        const ep = randomPlacement();
+        enemyGrid = ep.grid;
+        enemyTracker = ep.tracker;
+      }
+
+      document.getElementById("placementControls").style.display = "none";
+      renderEnemyGrid();
+      renderMyGrid();
+      renderShipList();
+      updateStatus();
+      updatePlayerStrips();
+
+      // CPU moves first if player chose black (not applicable here, player always fires first)
+    }
+
+    // ── Game end ─────────────────────────────────
+    function endGame(winner) {
+      gamePhase = "gameover";
+      boardLocked = true;
+
+      let icon, title, sub;
+      const myHits = shotLog.filter(e => (e.by === "You" || e.by === p1Name) && e.result !== "miss").length;
+      const cpuHits = shotLog.filter(e => (e.by !== "You" && e.by !== p1Name) && e.result !== "miss").length;
+      const myShots = shotLog.filter(e => e.by === "You" || e.by === p1Name).length;
+      const cpuShots = shotLog.filter(e => e.by !== "You" && e.by !== p1Name).length;
+      const acc = myShots > 0 ? Math.round(myHits / myShots * 100) : 0;
+
+      if (MODE === "cpu") {
+        const playerWon = winner === "player";
+        icon = playerWon ? "🏆" : "🤖";
+        title = playerWon ? "You Win!" : "CPU Wins";
+        sub = playerWon ? `Sank all enemy ships in ${myShots} shots!` : "Better luck next time!";
+      } else {
+        icon = winner === "player" ? "🏆" : "😞";
+        title = winner === "player" ? "You Win!" : winner === "p2" ? `${p2Name} Wins!` : "You Lose!";
+        sub = `Game over!`;
+      }
+
+      document.getElementById("gameOverIcon").textContent = icon;
+      document.getElementById("gameOverTitle").textContent = title;
+      document.getElementById("gameOverSub").textContent = sub;
+      document.getElementById("gameOverStats").innerHTML = `
+      <div class="go-stat"><div class="go-stat-val">${myShots}</div><div class="go-stat-label">Your Shots</div></div>
+      <div class="go-stat"><div class="go-stat-val">${acc}%</div><div class="go-stat-label">Accuracy</div></div>
+      <div class="go-stat"><div class="go-stat-val">${myHits}</div><div class="go-stat-label">Hits</div></div>
+      <div class="go-stat"><div class="go-stat-val">${cpuShots}</div><div class="go-stat-label">Opp. Shots</div></div>
+    `;
+
+      document.getElementById("gameOverOverlay").classList.add("show");
+      renderEnemyGrid(); // reveal enemy ships
+      renderMyGrid();
+
+      if (MODE === "online" && winner === "player") {
+        saveOnlineResult(winner === "player" ? myColor : (myColor === "white" ? "black" : "white"));
+      }
+    }
+
+    // ── Init game ─────────────────────────────────
+    function initGame() {
+      myGrid = createGrid();
+      myTracker = [];
+      myShotGrid = createGrid();
+      enemyGrid = createGrid();
+      enemyTracker = [];
+      enemyShotGrid = createGrid();
+      shotLog = [];
+      gamePhase = "placement";
+      myTurn = true;
+      boardLocked = false;
+      selectedShipIdx = null;
+      orientation = ORIENTATION.HORIZONTAL;
+      hoverCell = null;
+
+      buildGrid("myGrid", false);
+      buildGrid("enemyGrid", true);
+      setTimeout(buildAxisLabels, 100);
+
+      setupModeUI();
+      renderMyGrid();
+      renderEnemyGrid();
+      renderShipList();
+      updateStatus();
+      updatePlayerStrips();
+
+      document.getElementById("gameArea").style.display = "flex";
+      document.getElementById("waitingScreen").classList.remove("show");
+      document.getElementById("gameOverOverlay").classList.remove("show");
+      document.getElementById("placementControls").style.display = "";
+    }
+
+    // ── Mode UI ───────────────────────────────────
+    function setupModeUI() {
+      const iconEl = document.getElementById("modeBadgeIcon");
+      const labelEl = document.getElementById("modeBadgeLabel");
+      const valEl = document.getElementById("modeBadgeVal");
+
+      if (MODE === "cpu") {
+        iconEl.textContent = DIFF_EMOJIS[DIFFICULTY] || "🤖";
+        labelEl.textContent = "vs Computer";
+        valEl.textContent = DIFF_LABELS[DIFFICULTY] || "Beginner";
+      } else if (MODE === "local") {
+        iconEl.textContent = "👥";
+        labelEl.textContent = "Local Multiplayer";
+        valEl.textContent = "Pass & Play";
+      } else if (MODE === "online") {
+        iconEl.textContent = "🌐";
+        labelEl.textContent = "Online Ranked";
+        valEl.textContent = "Finding game…";
+      } else if (MODE === "solo") {
+        iconEl.textContent = "🎯";
+        labelEl.textContent = "Solo Practice";
+        valEl.textContent = "Practice Mode";
+      }
+
+      const undoVisible = false; // no undo in battleship
+      document.getElementById("offerDrawBtn").style.display = MODE === "online" ? "" : "none";
+    }
+
+    // ── Player strips ──────────────────────────────
+    function updatePlayerStrips() {
+      const userName = userProfile?.username || currentUser?.displayName || "You";
+      const userInit = (userName[0] || "?").toUpperCase();
+
+      document.getElementById("bottomAvatar").textContent = userInit;
+      document.getElementById("bottomPlayerName").textContent = userName;
+
+      if (MODE === "cpu") {
+        document.getElementById("topAvatar").textContent = "🤖";
+        document.getElementById("topAvatar").style.background = "linear-gradient(135deg,#1a3a5e,#3b8aff)";
+        document.getElementById("topPlayerName").textContent = `CPU · ${DIFF_LABELS[DIFFICULTY]}`;
+        document.getElementById("topPlayerSub").textContent = gamePhase === "battle" ? "Enemy fleet" : "";
+        document.getElementById("enemyBoardLabel").textContent = "Enemy Waters";
+        document.getElementById("myBoardLabel").textContent = "Your Fleet";
+      } else if (MODE === "local") {
+        document.getElementById("topAvatar").textContent = "2";
+        document.getElementById("topAvatar").style.background = "#1a5fc4";
+        document.getElementById("topPlayerName").textContent = p2Name;
+        document.getElementById("bottomPlayerName").textContent = p1Name;
+      }
+    }
+
+    // ── Online mode ───────────────────────────────
+    function initOnlineMode() {
+      if (!currentUser) { showToast("Sign in for online play"); setTimeout(() => location.href = "../dashboard/login.html", 1500); return; }
+      if (ROOM_CODE) joinOnlineRoom(ROOM_CODE);
+      else createOnlineRoom();
+    }
+
+    function genCode() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+    }
+
+    async function createOnlineRoom() {
+      const fb = window._fbReady;
+      const rtdb = window._fbRtdb;
+      if (!fb) return;
+      roomCode = genCode();
+      const user = currentUser;
+      const name = userProfile?.username || user.displayName || "Player";
+      myColor = "white";
+
+      await fb.set(fb.ref(rtdb, `bs_rooms/${roomCode}`), {
+        code: roomCode, status: "waiting",
+        white: { uid: user.uid, username: name, online: true },
+        black: null,
+        whitePlacement: null, blackPlacement: null,
+        shots: [], turn: "white",
+        result: null, reason: null,
+        draw: { white: false, black: false },
+      });
+
+      fb.onDisconnect(fb.ref(rtdb, `bs_rooms/${roomCode}/white/online`)).set(false);
+
+      document.getElementById("gameArea").style.display = "none";
+      document.getElementById("waitingScreen").classList.add("show");
+      document.getElementById("waitingRoomCode").textContent = roomCode;
+      document.getElementById("roomCodeDisplay").classList.add("show");
+      document.getElementById("roomCodeVal").textContent = roomCode;
+
+      subscribeOnlineRoom(roomCode);
+    }
+
+    async function joinOnlineRoom(code) {
+      const fb = window._fbReady, rtdb = window._fbRtdb;
+      if (!fb) return;
+      code = code.toUpperCase();
+      const snap = await fb.get(fb.ref(rtdb, `bs_rooms/${code}`));
+      if (!snap.exists()) { showToast("Room not found"); return; }
+      const room = snap.val();
+      if (room.status === "finished") { showToast("Game already ended"); return; }
+      if (room.white?.uid === currentUser.uid) { roomCode = code; myColor = "white"; initGame(); subscribeOnlineRoom(code); return; }
+      myColor = "black";
+      roomCode = code;
+      const name = userProfile?.username || currentUser.displayName || "Player";
+      await fb.update(fb.ref(rtdb, `bs_rooms/${code}`), {
+        status: "active",
+        black: { uid: currentUser.uid, username: name, online: true },
+      });
+      fb.onDisconnect(fb.ref(rtdb, `bs_rooms/${code}/black/online`)).set(false);
+      initGame();
+      subscribeOnlineRoom(code);
+    }
+
+    function subscribeOnlineRoom(code) {
+      const fb = window._fbReady, rtdb = window._fbRtdb;
+      if (!fb) return;
+      const roomRef = fb.ref(rtdb, `bs_rooms/${code}`);
+      unsubRoom = fb.onValue(roomRef, snap => {
+        const room = snap.val(); if (!room) return;
+
+        // Opponent joined
+        if (room.status === "active" && document.getElementById("waitingScreen").classList.contains("show")) {
+          document.getElementById("waitingScreen").classList.remove("show");
+          document.getElementById("gameArea").style.display = "flex";
+          initGame();
+          const opp = myColor === "white" ? room.black : room.white;
+          document.getElementById("topPlayerName").textContent = opp?.username || "Opponent";
+        }
+
+        // Opponent placement ready
+        if (room.status === "active") {
+          const myKey = myColor === "white" ? "whitePlacement" : "blackPlacement";
+          const oppKey = myColor === "white" ? "blackPlacement" : "whitePlacement";
+          if (room[oppKey] && !enemyGrid.some(row => row.includes(CELL.SHIP))) {
+            // Reconstruct enemy grid from hidden data (server-side validation would be here)
+            // For simplicity the opponent's grid is not revealed until game end
+          }
+        }
+
+        // Receive opponent's shot
+        const allShots = room.shots ? Object.values(room.shots) : [];
+        const newShots = allShots.filter(s => s.by !== myColor && !shotLog.find(l => l._id === s._id));
+        for (const shot of newShots) {
+          receiveOnlineShot(shot.r, shot.c, shot.result);
+        }
+
+        // Opponent presence
+        const opp = myColor === "white" ? room.black : room.white;
+        const oppOnline = opp?.online === true;
+        const dot = document.getElementById("opponentOnlineDot");
+        if (dot) dot.className = "online-dot" + (oppOnline ? "" : " offline");
+        const txt = document.getElementById("opponentStatusText");
+        if (txt) txt.textContent = oppOnline ? "Opponent online" : "Opponent offline";
+
+        if (room.status === "finished" && room.result && gamePhase !== "gameover") {
+          endGame(room.result === myColor ? "player" : "opponent");
+        }
+      });
+    }
+
+    function receiveOnlineShot(r, c, resultHint) {
+      const result = shoot(myGrid, myTracker, enemyShotGrid, r, c);
+      enemyShotGrid = result.shotGrid;
+      myTracker = result.tracker;
+      addShotLog("Opponent", r, c, result.result, result.sunkShip);
+      animateShot("myGrid", r, c, result.result);
+      updateShotCount();
+      renderMyGrid();
+      updateStatus();
+      if (result.gameOver) { endGame("opponent"); return; }
+      myTurn = true; boardLocked = false; renderEnemyGrid();
+    }
+
+    async function sendShotOnline(r, c, result, shotGrid) {
+      const fb = window._fbReady, rtdb = window._fbRtdb;
+      if (!roomCode || !fb) return;
+      const id = Date.now() + "_" + r + "_" + c;
+      await fb.push(fb.ref(rtdb, `bs_rooms/${roomCode}/shots`), { r, c, result, by: myColor, _id: id });
+      await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}`), {
+        turn: myColor === "white" ? "black" : "white",
+      });
+    }
+
+    async function sendPlacementOnline() {
+      const fb = window._fbReady, rtdb = window._fbRtdb;
+      if (!roomCode || !fb) return;
+      const key = myColor === "white" ? "whitePlacement" : "blackPlacement";
+      await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}`), {
+        [key]: serializeTracker(myTracker),
+      });
+    }
+
+    async function saveOnlineResult(winner) {
+      const fb = window._fbReady, rtdb = window._fbRtdb;
+      if (!roomCode || !currentUser || !fb) return;
+      try {
+        await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}`), { status: "finished", result: winner, reason: "sunk_all" });
+        // Elo update would be similar to chess — omitted for brevity but follows same pattern
+      } catch (e) { console.error(e); }
+    }
+
+    // ── Controls ──────────────────────────────────
+    function setupControls() {
+      // Rotate
+      ["navRotateBtn", "rotateBtn"].forEach(id => {
+        document.getElementById(id)?.addEventListener("click", () => {
+          orientation = orientation === ORIENTATION.HORIZONTAL ? ORIENTATION.VERTICAL : ORIENTATION.HORIZONTAL;
+          showToast(`Orientation: ${orientation}`);
+          renderMyGrid();
+        });
+      });
+
+      // Random placement
+      ["navRandomBtn", "randomPlaceBtn"].forEach(id => {
+        document.getElementById(id)?.addEventListener("click", () => {
+          const ep = randomPlacement();
+          myGrid = ep.grid;
+          myTracker = ep.tracker;
+          selectedShipIdx = null;
+          renderMyGrid();
+          renderShipList();
+          updatePlacementBtn();
+          updateStatus();
+        });
+      });
+
+      // Clear
+      document.getElementById("clearBtn")?.addEventListener("click", () => {
+        myGrid = createGrid();
+        myTracker = [];
+        selectedShipIdx = null;
+        renderMyGrid();
+        renderShipList();
+        updatePlacementBtn();
+        updateStatus();
+      });
+
+      // Start game
+      document.getElementById("startGameBtn")?.addEventListener("click", () => {
+        if (MODE === "online") sendPlacementOnline();
+        if (MODE === "local") {
+          if (passPlayPhase === "p1-placement") {
+            passPlayPhase = "p2-placement";
+            showPassPlayScreen(`${p2Name}, place your ships!`, "Hand the device over.");
+            setTimeout(() => {
+              myGrid = createGrid(); myTracker = [];
+              selectedShipIdx = null;
+              renderMyGrid(); renderShipList(); updatePlacementBtn(); updateStatus();
+            }, 300);
+            return;
+          }
+          if (passPlayPhase === "p2-placement") {
+            // Save p2 placement, start battle
+            // For pass&play, we swap boards each turn
+            passPlayPhase = "p1-turn";
+            startBattle();
+            return;
+          }
+        }
+        startBattle();
+      });
+
+      // Pass & play confirm
+      document.getElementById("passPlayConfirmBtn")?.addEventListener("click", () => {
+        document.getElementById("passPlayOverlay").classList.remove("show");
+      });
+
+      // Resign
+      ["navResignBtn", "resignBtn"].forEach(id => {
+        document.getElementById(id)?.addEventListener("click", () => {
+          if (gamePhase === "gameover") return;
+          if (!confirm("Are you sure you want to resign?")) return;
+          if (MODE === "online" && roomCode) {
+            const fb = window._fbReady, rtdb = window._fbRtdb;
+            if (fb) fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}`), { status: "finished", result: myColor === "white" ? "black" : "white", reason: "resignation" });
+          }
+          endGame("opponent");
+        });
+      });
+
+      // Draw offer/accept (online only)
+      document.getElementById("offerDrawBtn")?.addEventListener("click", async () => {
+        if (MODE !== "online" || !roomCode) { showToast("Draw only available in online mode"); return; }
+        const fb = window._fbReady, rtdb = window._fbRtdb;
+        if (fb) { await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}/draw`), { [myColor]: true }); showToast("Draw offered"); }
+      });
+
+      document.getElementById("acceptDrawBtn")?.addEventListener("click", async () => {
+        if (!roomCode) return;
+        const fb = window._fbReady, rtdb = window._fbRtdb;
+        if (fb) await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}`), { status: "finished", result: "draw", reason: "agreement" });
+      });
+
+      document.getElementById("declineDrawBtn")?.addEventListener("click", async () => {
+        if (!roomCode) return;
+        const fb = window._fbReady, rtdb = window._fbRtdb;
+        if (fb) await fb.update(fb.ref(rtdb, `bs_rooms/${roomCode}/draw`), { white: false, black: false });
+        document.getElementById("drawOfferBanner").classList.remove("show");
+      });
+
+      // Game over buttons
+      document.getElementById("gameOverNewBtn")?.addEventListener("click", () => {
+        if (unsubRoom) { unsubRoom(); unsubRoom = null; }
+        location.href = "../dashboard/index.html";
+      });
+
+      document.getElementById("gameOverReviewBtn")?.addEventListener("click", () => {
+        document.getElementById("gameOverOverlay").classList.remove("show");
+      });
+
+      // Cancel waiting (online)
+      document.getElementById("cancelWaitBtn")?.addEventListener("click", async () => {
+        const fb = window._fbReady, rtdb = window._fbRtdb;
+        if (roomCode && fb) await fb.remove(fb.ref(rtdb, `bs_rooms/${roomCode}`));
+        location.href = "../dashboard/index.html";
+      });
+
+      // Room code copy
+      document.getElementById("waitingRoomCode")?.addEventListener("click", () => {
+        const link = location.origin + location.pathname + "?mode=online&room=" + roomCode;
+        navigator.clipboard.writeText(link).then(() => showToast("Link copied!")).catch(() => showToast("Room: " + roomCode));
+      });
+
+      document.getElementById("roomCodeCopy")?.addEventListener("click", () => {
+        const link = location.origin + location.pathname + "?mode=online&room=" + roomCode;
+        navigator.clipboard.writeText(link).then(() => showToast("Link copied!")).catch(() => showToast("Room: " + roomCode));
+      });
+    }
+
+    function showPassPlayScreen(title, sub) {
+      document.getElementById("passPlayTitle").textContent = title;
+      document.getElementById("passPlaySub").textContent = sub;
+      document.getElementById("passPlayOverlay").classList.add("show");
+    }
+
+    // ── Keyboard shortcuts ───────────────────────
+    document.addEventListener("keydown", e => {
+      if (e.key === "r" || e.key === "R") {
+        orientation = orientation === ORIENTATION.HORIZONTAL ? ORIENTATION.VERTICAL : ORIENTATION.HORIZONTAL;
+        renderMyGrid();
+      }
+      if (e.key === "Escape") { selectedShipIdx = null; renderShipList(); renderMyGrid(); }
+    });
+
+    // ── Toast ────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2200);
+    }
+
+    // ── Online players panel ─────────────────────
+    if (MODE === "online") {
+      document.getElementById("onlinePlayersPanel").style.display = "block";
+    }
+
+    setupControls();
+
+    window.addEventListener("resize", () => { buildAxisLabels(); renderMyGrid(); renderEnemyGrid(); });
+
+  </script>
+</body>
+
+</html>
